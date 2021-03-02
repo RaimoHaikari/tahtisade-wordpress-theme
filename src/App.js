@@ -1,21 +1,87 @@
-import React from "react";
-import logo from "./logo.svg";
+import React, {useState} from 'react';
+
+import {
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+
+import Sidebar from "./components/sidebar";
+import Navbar from "./components/navbar";
+
+import Home from "./layout/home";
+import SignIn from "./layout/SignIn"
+
+import Elokuvat from "./layout/movies";
+
+import Footer from "./components/footer";
+
 import "./App.css";
 
-function App() {
+const App = () => {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggle = () => {
+        setIsOpen(!isOpen);
+    }
+
+    const padding = {
+        padding: 5
+    }
+
+    /*
+<Sidebar isOpen={isOpen} toggle={toggle} />
+     */
     return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>react-src/src/App.js</code> and save to reload.
-                </p>
-                <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-                    Learn React
-                </a>
-            </header>
-        </div>
+        <>
+
+<Sidebar isOpen={isOpen} toggle={toggle} />
+            <Navbar toggle={toggle} />
+            
+
+            <Switch>
+
+                <Route path="/signin" >
+                    <SignIn />
+                </Route>
+
+                <Route path="/movies" >
+                    <Elokuvat />
+                </Route>   
+
+                <Route path="/" >
+                    <Home />
+                </Route>      
+
+            </Switch>
+
+        </>
     );
-}
+};
+
+/*
+
+
+            <div>
+                <Link style={padding} to="/">Etusivu</Link>
+                <Link style={padding} to="/elokuvat">Elokuvat</Link>
+                <Link style={padding} to="/uutiset">Uutisia</Link>
+            </div>
+
+            <Switch>
+                <Route path="/uutiset">
+                    <Uutisia />
+                </Route>
+                <Route path="/elokuvat">
+                    <Elokuvat />
+                </Route>
+                <Route path="/">
+                    <FrontPage />
+                </Route>
+            </Switch>
+
+            <Footer />
+*/
 
 export default App;

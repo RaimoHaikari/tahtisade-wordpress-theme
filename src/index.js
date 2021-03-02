@@ -1,17 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
 
+import {
+  BrowserRouter as Router
+} from 'react-router-dom'
+
+import {Provider} from "react-redux"
+
+import store from "./store"
+
+import App from './App';
+
+
+/*
+ * Basenamen määrittelyyn pitää saada tunnistus ollaanko kotona vai tuotantoversiossa
+ *
+ * Ilmeisesti router pitää olla pystyssä, ennen kuin reititettäviä komponentteja aletaan esittelemään
+ * - https://stackoverflow.com/questions/63712504/react-router-v5-1-0-cannot-read-property-location-of-undefined
+ * 
+ */
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <Router basename="/tahtisade">
+      <App />
+    </Router>
+  </Provider>,
   document.getElementById('root')
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
