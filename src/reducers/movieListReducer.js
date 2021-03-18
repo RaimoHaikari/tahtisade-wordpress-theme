@@ -1,3 +1,5 @@
+import moviesService from '../services/movies';
+
 /*
  * Desimaalifunktion pyöristämisessä käyettävä apufunktio
  *
@@ -21,57 +23,73 @@ const round = (value, precision) => {
  */
 const average = arr => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
 
+/*
+ * @todo: Pitäisikö lukea palvelimelta
+ */
 const getHeaders = () => {
     return [
-        { name: "Nimi", field: "name", sortable: true },
+        { name: "Nimi", field: "nimi", sortable: true },
         { name: "Arvosteluja yht.", field: "numberOfReviews",  sortable: true},
         { name: "Keskiarvo", field: "averageOfReviews",  sortable: false}
     ];
 }
 
 /*
- *
+ * allTheMovies: Alkuperäinen, kaikki elokuvat sisältävä lista
+ * currentPage: Aktiivinen sivu. Koska elokuvia on paljon, näytetään kerralla vain osa. 
+ * headers: Taulukkomuotoisen elokuvaluettelon otsikkorivi.
+ * itemsPerPage: Montako elokuvaa kerrallaan enintään näyetään.
+ * loading: ollaanko lukemassa tietoja palvelimelta
+ * message: suoritettavaan toimenpiteeseen liittyvä, käyttäjälle esitettävä viesti
+ * search: Hakutermi. Tiettyä elokuvaa voi etsiä syöttämällä sen nimen. 
+ * sortingField: Minkä kentän mukaan taulukkomuotoinen esitys lajitellaan
+ * sortingOrder: Lajittelu järjestys
+ * totalItems: Ehdot täyttävien elokuvien lkm mahdollinen hakuterminja/tai genre-rajauksen aiheuttama suodatus huomioidaan 
+ * visibleMovies: Listalla esitettävät elokuvat. Mitä jää jäljelle, kun hakuehdot kohdistetaan elokuvalistaan.
  */
-const getInitialMovieList = () => {
-    return [
-        {name: 'Elämää kuoleman jälkeen',id: 1,poster: 'elamaaKuolemanJalkeen.jpg', ensiIlta: '6.3.2020', stars: [4, 3, 3, 4, 3]},
-        {name: 'Emma.',id: 2,poster: 'emma.jpg', ensiIlta: '6.3.2020', stars: [4, 3, 3]},
-        {name: 'Bombshell',id: 3,poster: 'bombshell.jpg', ensiIlta: ',7.2.2020', stars: [3, 2, 3, 3, 3]},
-        {name: 'Birds of Prey',id: 4,poster: 'birdsOfPrey.jpg', ensiIlta: '7.2.2020', stars: [2, 3, 2]},
-        {name: 'A Hidden Life',id: 5,poster: 'aHiddenLife.jpg', ensiIlta: '7.2.2020', stars: [4, 4, 2, 4]},
-        {name: 'La Belle Époque',id: 6,poster: 'laBelleEpoque.jpg', ensiIlta: '13.3.2020', stars: [3, 3, 3, 2, 4, 5]},
-        {name: 'Weathering with You',id: 7,poster: 'weatheringWithYou.jpg', ensiIlta: '13.3.2020', stars: [3, 3, 4, 3, 4, 4, 4, 4]},
-        {name: 'Aika jonka sain',id: 8,poster: 'aikaJonkaSain.jpg', ensiIlta: '13.3.2020', stars: [3, 2, 3, 2, 2, 3, 4, 1]},
-        {name: 'Mr. Jones',id: 9,poster: 'mrJones.jpg', ensiIlta: '13.3.2020', stars: [4, 4, 4, 4, 3, 3, 4, 4]},
-        {name: 'The Cave',id: 10,poster: 'theCave.jpg', ensiIlta: '12.3.2020', stars: [5]},
-    ];
-}
-
 const initialState = {
-    headers: getHeaders(),
-    loading: false,
-    ovies: getInitialMovieList().map(m => {
-        return {
-            ...m,
-            numberOfReviews: m.stars.length, 
-            averageOfReviews: (m.stars.length===0?0:round(average( m.stars),2)),
-        };
-    }),
     allTheMovies: [],
-    visibleMovies: [],
+    currentPage: 3,
+    headers: [],
+    itemsPerPage: 4,
+    loading: false,
     message: 'Aloitustervehdys',
+    search: '',
     sortingField: '',
-    sortingOrder: ''
+    sortingOrder: '',
+    totalItems: 0, // näytettävien objektien kokonaismäärä
+    visibleMovies: []
 }
 
 /*
- * 
+ * Palvelimelta on haettu yhteenvetotiedot kaikista kantaan tallennetuista elokuvista.
+ * Poimintaan näistä käyttäjälle esitettävät elokuvat. Valintaan vaikuttaa mm.:
+ * - onko jotain suodatettu
+ * - kuinka elokuvat halutaan lajitella
  */
-const getPresentedMovieList = (allTheMovies, sortingField, sortingOrder) => {
+const getPresentedMovieList = (allTheMovies, currentPage, itemsPerPage, search ,sortingField, sortingOrder) => {
 
     let computedMovies = allTheMovies;
 
-    // Lajittelu
+    /*
+     * Haku
+     * - kohdistuu nimeen
+     */
+    if(search) {
+
+        computedMovies = computedMovies.filter(item => {
+
+            return (
+                item.nimi.toLowerCase().includes(search.toLowerCase()) 
+            )
+
+        })
+
+    }
+
+    /*
+     * Lajittelu
+     */ 
     if(sortingField){
         const reversed = sortingOrder === "asc" ? 1 : -1;
 
@@ -80,7 +98,7 @@ const getPresentedMovieList = (allTheMovies, sortingField, sortingOrder) => {
             let val;
 
             switch (sortingField) {
-                case "name":
+                case "nimi":
                   val = reversed * a[sortingField].localeCompare(b[sortingField])
                   break;
                 default:
@@ -91,20 +109,57 @@ const getPresentedMovieList = (allTheMovies, sortingField, sortingOrder) => {
         })
     }
 
-    return computedMovies;
+
+    return computedMovies.slice(
+        (currentPage - 1) * itemsPerPage,
+        (currentPage - 1) * itemsPerPage + itemsPerPage
+    );
+    
+
+
+    //return computedMovies;
 
 }
 
 /*
  * R E A C T I O N S   T O W A R D S    A C T I O N S
  */ 
+const setSearchSettings = (state, data) => {
+
+    let searchStr = data.str;
+
+    // - päivitetään kävijälle näytettävä elokuvalistaus
+    let moviesToShow = getPresentedMovieList(
+        state.allTheMovies,
+        state.currentPage, 
+        state.itemsPerPage,
+        searchStr, 
+        state.sortingField, 
+        state.sortingOrder
+    );
+
+    return {
+        ...state,
+        search: searchStr,
+        totalItems: moviesToShow.length,
+        visibleMovies: moviesToShow
+    }
+}
+
 const setSortingSettings = (state, data)  => {
 
     let newField = data.field;
     let newOrder = ((newField === state.sortingField) && (state.sortingOrder === "asc")) ? "desc" : "asc";
 
     // - päivitetään kävijälle näytettävä elokuvalistaus
-    let moviesToShow = getPresentedMovieList(state.allTheMovies, newField, newOrder);
+    let moviesToShow = getPresentedMovieList(
+        state.allTheMovies, 
+        state.currentPage, 
+        state.itemsPerPage,
+        state.search, 
+        newField, 
+        newOrder
+    );
 
     return {
         ...state,
@@ -118,42 +173,51 @@ const setSortingSettings = (state, data)  => {
  * Suodatetaan kaikki elokuvat sisältävästä listasta kävijälle näytettävät elokuvat
  * - missä järjestyksessä elokuvat listataan
  */
-const displayMovieList = (state) => {
+const displayMovieList = (state, data) => {
 
-    let moviesToShow = getPresentedMovieList(state.allTheMovies, state.sortingField, state.sortingOrder);
+    let loadedMovieList = data.map(d => {
+
+        return {
+            ...d,
+            numberOfReviews: d.stars.length,
+            averageOfReviews: (d.stars.length===0?0:round(average(d.stars),2))
+        }
+    })
+
+    let moviesToShow = getPresentedMovieList(
+        loadedMovieList,
+        state.currentPage, 
+        state.itemsPerPage, 
+        state.search, 
+        state.sortingField, 
+        state.sortingOrder
+    );
 
     return {
         ...state,
+        allTheMovies: loadedMovieList,
+        headers: getHeaders(),
         message: "Sovellus alustettu",
+        totalItems: moviesToShow.length,
         visibleMovies: moviesToShow
     };  
-
-}
-
-/*
- * Luetaan yhteenveto talleteuista elokuvatiedoista
- */
-const loadMovies = (state) => {
-
-    let movies =  getInitialMovieList().map(m => {
-        return {
-            ...m,
-            numberOfReviews: m.stars.length, 
-            averageOfReviews: (m.stars.length===0?0:round(average( m.stars),2)),
-        };
-    });
-
-    return {
-        ...state,
-        allTheMovies: movies,
-        message: "Alustus käynnissä...."
-    };
 
 }
 
 /* 
  * A C T I O N S
  */ 
+export const updateSearchSetting = (val) => {
+
+    return dispatch => {
+
+        dispatch({
+            type: 'MOVIELIST_UPDATE_SEARCH',
+            data: val
+        })
+    }
+}
+
 export const updateSortingSetting = (val) => {
 
     return dispatch => {
@@ -165,47 +229,17 @@ export const updateSortingSetting = (val) => {
     }
 }
 
-export const init = (len = 2) => {
+export const initializeMovies = () => {
 
-    return async (dispatch, state) => {
-
-        // testaa onko ajastin käytössä
-        let timerRunning = state().timer.running;
-        let timerId = state().timer.id;
-
-        /*
-         * Keskeytetään käynnissä oleva ajastettu prosessi
-         */
-        if(timerRunning) {
-            clearTimeout(timerId);
-            dispatch({type: 'CLEAR'});
-        } 
+    return async dispatch => {
+        const movies =  await moviesService.getGeneralListing();
 
         dispatch({
-            type: 'INITIALIZING'
+            type: 'INITIALIZED',
+            data: movies
         })
-
-        let timeoutId = setTimeout(function() {
-
-            dispatch({type: 'TIMER_CLEAR'});
-            dispatch({type: 'INITIALIZED'});
-
-        }, len * 1000);
-
-        // kirjataan timerin käynnistys muistiin
-        dispatch({
-            type: 'TIMER_START',
-            data: {
-                id: timeoutId
-            }
-        })
-
     }
-
-
 }
-
-
 
 const movieListReducer = (state = initialState, action) => {
 
@@ -215,13 +249,10 @@ const movieListReducer = (state = initialState, action) => {
             return setSortingSettings(state, action.data);
 
         case 'INITIALIZED':
+            return displayMovieList(state, action.data);
 
-            return displayMovieList(state);
-
-         
-        case 'INITIALIZING':
-
-            return loadMovies(state);
+        case 'MOVIELIST_UPDATE_SEARCH':
+            return setSearchSettings(state, action.data);
 
         default:
             return state;

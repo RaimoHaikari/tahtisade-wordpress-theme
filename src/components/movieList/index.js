@@ -2,7 +2,11 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
 import TablePresentation from "./TablePresentation"
+import Search from "../DT/Search";
 
+import {
+    updateSearchSetting
+} from "../../reducers/movieListReducer";
 
 const MovieList = () => {
 
@@ -10,10 +14,13 @@ const MovieList = () => {
 
     const {loading, movies} = useSelector(state => state.movies);
 
-    //console.log(movies);
+
 
     return (
         <>
+            <Search 
+                onSearch={(val) => dispatch(updateSearchSetting({str: val}))}
+            />
             <TablePresentation />
         </>
     );

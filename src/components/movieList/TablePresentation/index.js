@@ -1,8 +1,12 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
+
+import parse from 'html-react-parser';
+
 import {
-    init, updateSortingSetting
+    initializeMovies,
+    updateSortingSetting
 } from "../../../reducers/movieListReducer";
 
 //import {Link} from 'react-router-dom';
@@ -22,7 +26,7 @@ const TablePresentation = () => {
 
     const dispatch = useDispatch();
 
-    const {headers, message, visibleMovies, sortingField, sortingOrder} = useSelector(state => state.movies);
+    const {headers, message, visibleMovies, search, sortingField, sortingOrder} = useSelector(state => state.movies);
 
     const onSortingChange = (field)  => {
 
@@ -30,8 +34,16 @@ const TablePresentation = () => {
 
     }
 
+    const emphasizeSearched = (str) => {
+        let match = search;
+        let replace = "<mark>"+match+"</mark>";
+        let regexp = new RegExp(match, "gi");
+
+        return parse(str.replace(regexp, replace))
+    }
+
     useEffect(() => {
-        dispatch(init())
+        dispatch(initializeMovies())
     }, [])
 
     /*
@@ -72,7 +84,12 @@ const TablePresentation = () => {
                         visibleMovies.map(m => {
                             return (
                                 <TR key={m.id}>
-                                    <TD before="Nimi">{m.name}</TD>
+                                    <TD before="Nimi">
+                                        {
+                                            search !== ''
+                                            ? emphasizeSearched(m.nimi)
+                                            : m.nimi
+                                        }</TD>
                                     <TD before="Arvosteluja">{m.numberOfReviews}</TD>
                                     <TD before="Keskiarvo">{m.averageOfReviews}</TD>
                                 </TR>
