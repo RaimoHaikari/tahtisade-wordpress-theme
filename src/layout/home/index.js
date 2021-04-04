@@ -23,6 +23,15 @@ const Home = () => {
 
     return (
         <>
+            <HeroSection />
+            <InfoSections {...homeObjOne} />
+            <InfoSections {...homeObjTwo} />
+            <InfoSections {...homeObjThree} />
+
+            <Services />
+            
+            <InfoSections {...homeObjFour} />    
+
             <Footer />
         </>
     );

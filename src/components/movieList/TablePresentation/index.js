@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import parse from 'html-react-parser';
 
 import {
+    bar,
     initializeMovies,
     updateSortingSetting
 } from "../../../reducers/movieListReducer";
@@ -14,7 +15,7 @@ import {
 import {BiSortDown, BiSortUp} from "react-icons/bi"
 
 import {
-    Table,
+    TABLE,
     THEAD,
     TR,
     TBODY,
@@ -42,18 +43,9 @@ const TablePresentation = () => {
         return parse(str.replace(regexp, replace))
     }
 
-    useEffect(() => {
-        dispatch(initializeMovies())
-    }, [])
-
-    /*
-    */
-    return (
-        <>
-            <div>
-                {message}
-            </div>
-            <Table>
+    const displayTable = () => {
+        return (
+            <TABLE className="taulukko">
                 <THEAD>
                     <TR>
                     {
@@ -97,13 +89,23 @@ const TablePresentation = () => {
                         })
                     }
                 </TBODY>
-            </Table>
+            </TABLE>   
+        )
+    }
+
+    /*
+     *
+     */
+    return (
+        <>
+            {
+                visibleMovies
+                ? displayTable()
+                : null
+            }
         </>
     );
 };
 
-/*
-<TD before="Keskiarvo">{m.averageOfReviews}</TD>
-*/
 
 export default TablePresentation;

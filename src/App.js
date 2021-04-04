@@ -2,8 +2,7 @@ import React, {useState} from 'react';
 
 import {
     Switch,
-    Route,
-    Link
+    Route
 } from "react-router-dom";
 
 import Sidebar from "./components/sidebar";
@@ -13,6 +12,9 @@ import Home from "./layout/home";
 import SignIn from "./layout/SignIn"
 
 import Elokuvat from "./layout/movies";
+import Elokuva from "./layout/movie";
+
+import Genret from './layout/genres'
 
 import Footer from "./components/footer";
 
@@ -32,6 +34,7 @@ const App = () => {
 
     /*
 <Sidebar isOpen={isOpen} toggle={toggle} />
+<Route path="/elokuvat/:id" component={SingleMovie} />
      */
     return (
         <>
@@ -46,9 +49,17 @@ const App = () => {
                     <SignIn />
                 </Route>
 
+                <Route path="/movies/:id">
+                    <Elokuva />
+                </Route>
+
                 <Route path="/movies" >
                     <Elokuvat />
-                </Route>   
+                </Route>
+
+                <Route path="/genres" >
+                    <Genret />
+                </Route>
 
                 <Route path="/" >
                     <Home />

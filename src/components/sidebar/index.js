@@ -3,10 +3,8 @@ import {
     CloseIcon,
     Icon,
     SidebarContainer,
-    SidebarLink,
     SidebarMenu,
-    SidebarRoute,
-    SideBtnWrap,
+    Linkki,
     SidebarWrapper,
 } from "./sidebarElements";
 
@@ -22,23 +20,13 @@ const Sidebar = ({isOpen, toggle}) => {
 
             <SidebarWrapper>
                 <SidebarMenu>
-                    <SidebarLink to="about" onClick={toggle}>
-                    About
-                    </SidebarLink>
-                    <SidebarLink to="discover" onClick={toggle}>
-                    Discover
-                    </SidebarLink>
-                    <SidebarLink to="services" onClick={toggle}>
-                    Services
-                    </SidebarLink>
-                    <SidebarLink to="signup" onClick={toggle}>
-                    Sign Up
-                    </SidebarLink>
+                    <Linkki to='/movies'>
+                        Elokuvat
+                    </Linkki>
+                    <Linkki to='/genres'>
+                        Genret
+                    </Linkki>
                 </SidebarMenu>
-
-                <SideBtnWrap>
-                    <SidebarRoute to="/signin">Sign in</SidebarRoute>
-                </SideBtnWrap>
 
             </SidebarWrapper>
 

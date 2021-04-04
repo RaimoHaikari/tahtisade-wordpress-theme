@@ -4,6 +4,8 @@ import {animateScroll as scroll} from "react-scroll";
 import {IconContext} from "react-icons";
 import {FaBars} from 'react-icons/fa';
 
+import {Logo} from "./logo"
+
 import {
     MobileIcon,
     Nav, 
@@ -12,6 +14,7 @@ import {
     NavBtnLink,
     NavItem,
     NavLinks,
+    Linkki,
     NavLogo,
     NavMenu
 } from "./navbarElements"
@@ -41,6 +44,47 @@ const Navbar = ({toggle}) => {
 
     return (
         <>
+            <IconContext.Provider value={{color: '#fff'}}>
+                <Nav scrollNav={scrollNav}>
+                    <NavbarContainer>
+
+                        <NavLogo 
+                            onClick={toggleHome}
+                            to="/"
+                        >
+                            <Logo />
+                        </NavLogo>
+
+                        <MobileIcon onClick={toggle}>
+                            <FaBars />
+                        </MobileIcon>
+
+                        <NavMenu>
+
+                            <NavItem>
+                                <Linkki 
+                                    to='/movies'
+                                >Elokuvat</Linkki>
+                            </NavItem>
+                            <NavItem>
+                                <Linkki 
+                                    to='/genres'
+                                >Genret</Linkki>
+                            </NavItem>
+
+                        </NavMenu>
+
+                    </NavbarContainer>
+                </Nav>
+            </IconContext.Provider>
+        </>
+    );
+};
+
+export default Navbar;
+
+/*
+       <>
             <IconContext.Provider value={{color: '#fff'}}>
                 <Nav scrollNav={scrollNav}>
                     <NavbarContainer>
@@ -104,85 +148,6 @@ const Navbar = ({toggle}) => {
                                 Elokuvat
                             </NavBtnLink>
                             
-                        </NavBtn>
-
-                    </NavbarContainer>
-                </Nav>
-            </IconContext.Provider>
-        </>
-    );
-};
-
-export default Navbar;
-
-/*
-<>
-            <IconContext.Provider value={{color: '#fff'}}>
-                <Nav scrollNav={scrollNav}>
-                    <NavbarContainer>
-
-                        <NavLogo 
-                            onClick={toggleHome}
-                            to="/"
-                            >tahtisade</NavLogo>
-
-                        <MobileIcon onClick={toggle}>
-                            <FaBars />
-                        </MobileIcon>
-
-                        <NavMenu>
-
-                            <NavItem>
-                                <NavLinks 
-                                    to='about'
-                                    duration={500}
-                                    spy={true}
-                                    exact='true'
-                                    offset={-80}
-                                    smooth={true}
-                                >About</NavLinks>
-                            </NavItem>
-                            <NavItem>
-                                <NavLinks 
-                                    to='discover'
-                                    duration={500}
-                                    spy={true}
-                                    exact='true'
-                                    offset={-80}
-                                    smooth={true}
-                                >Discover</NavLinks>
-                            </NavItem>
-                            <NavItem>
-                                <NavLinks 
-                                    to='services'
-                                    duration={500}
-                                    spy={true}
-                                    exact='true'
-                                    offset={-80}
-                                    smooth={true}
-                                >Services</NavLinks>
-                            </NavItem>
-                            <NavItem>
-                                <NavLinks 
-                                    to='signup'
-                                    duration={500}
-                                    spy={true}
-                                    exact='true'
-                                    offset={-80}
-                                    smooth={true}
-                                >Sign Up</NavLinks>
-                            </NavItem>
-                        </NavMenu>
-
-                        <NavBtn>
-
-                            <NavBtnLink to="/signin">
-                                Sign In
-                            </NavBtnLink>
-
-                            <NavBtnLink to="/movies">
-                                Elokuvat
-                            </NavBtnLink>
                         </NavBtn>
 
                     </NavbarContainer>

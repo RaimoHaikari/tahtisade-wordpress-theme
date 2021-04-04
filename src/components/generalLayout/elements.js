@@ -2,16 +2,32 @@ import styled from 'styled-components';
 
 /*
  * background: #101522;
+    
  */
 export const Container = styled.div`
-    background: navy;
+    background: ${props => props.theme.backgroundColor};
+`;
+
+export const PaginationAndSearch = styled.div`
+
+    padding-top: ${props => props.theme.navbar.height};
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+
+    display: flex;
+
+    & .paginationContainer {
+        margin-right: auto;
+    }
 `;
 
 export const ContentWrap = styled.div`
-    padding: 80px 2px 48px 2px;
 
-    color: black;
+    color: ${props => props.theme.defaultTextColor};
     display: flex;
+
+    padding: 10px 2px 48px 2px;
 
     /*
     flex-direction: column;
@@ -28,7 +44,7 @@ export const ContentWrap = styled.div`
 
 export const Main = styled.main`
     margin: 2px;
-    background-color: white;
+    background-color: ${props => props.theme.bgLight};
     flex: 4;
 `;
 

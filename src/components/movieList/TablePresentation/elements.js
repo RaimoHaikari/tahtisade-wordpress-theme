@@ -8,7 +8,7 @@ import {FaTimes} from "react-icons/fa";
  */
 
 
-export const Table = styled.table`
+export const TABLE = styled.table`
     border-collapse: collapse; 
 
     width: 100%;
@@ -19,9 +19,15 @@ export const Table = styled.table`
     overflow: hidden;
 `;
 
+/*
+background-color: ${props => props.theme.bgLight}; 
+ */
 export const THEAD = styled.thead`
-    background-color: #009879;
-    color: #fff;
+
+    & > tr {
+        background-color: ${props => props.theme.bgLight};
+    }
+    
 `;
 
 
@@ -33,7 +39,7 @@ export const TH = styled.th`
     padding: 10px;
     text-align: left;
 
-    color: ${props => props.sortingField ? "navy" : "black"};;
+    color: ${props => props.sortingField ? props.theme.txtActive : props.theme.txtDefault};;
     cursor: ${props => props.sortable ? "pointer" : "default"};
 
     &:before {
@@ -52,7 +58,7 @@ export const TR = styled.tr`
     border-bottom: 1px solid #dddddd;
 
     &:nth-of-type(even) {
-        background-color: #f3f3f3;
+        background-color: ${props => props.theme.bgSecondary};
     }
 
     &:last-of-type {
@@ -62,6 +68,7 @@ export const TR = styled.tr`
 
 
 /*
+ #f3f3f3
  * https://stackoverflow.com/questions/46339034/how-to-render-pseudo-before-content-dynamically-in-styled-component
  */
 export const TD = styled.td`

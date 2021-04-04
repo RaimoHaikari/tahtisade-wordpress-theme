@@ -1,4 +1,30 @@
+import React from 'react';
 import moviesService from '../services/movies';
+
+import Card from "../components/movieList/Card";
+import TablePresentation from "../components/movieList/TablePresentation"
+
+import {
+    SiFirst,
+    SiLastpass
+} from "react-icons/si"
+
+
+
+const DISPLAYTYPE = [
+
+    {
+        name: 'Taulukko',
+        active: true,
+        content: <TablePresentation />
+    },
+    {
+        name: 'Kuvakkeet',
+        active: false,
+        content: <Card />
+    }
+
+];
 
 /*
  * Desimaalifunktion pyöristämisessä käyettävä apufunktio
@@ -48,24 +74,49 @@ const getHeaders = () => {
  * visibleMovies: Listalla esitettävät elokuvat. Mitä jää jäljelle, kun hakuehdot kohdistetaan elokuvalistaan.
  */
 const initialState = {
-    allTheMovies: [],
-    currentPage: 3,
+    allTheMovies: null,
+    currentPage: 1,
+    displayTypes: DISPLAYTYPE,
     headers: [],
-    itemsPerPage: 4,
+    itemsPerPage: 7,
     loading: false,
     message: 'Aloitustervehdys',
+    maxNumberOfPaginationLinks: 5,
+    paginationLinks: [],
     search: '',
     sortingField: '',
     sortingOrder: '',
-    totalItems: 0, // näytettävien objektien kokonaismäärä
-    visibleMovies: []
+    totalItems: 0,  // näytettävien objektien kokonaismäärä
+    totalPages: 0,  // kuinka monta sivua tarvitaan, kun kerralla näytetään itemsPerPage objektia sivulla
+    visibleMovies: null
+}
+
+
+/*
+ * Montako sivua tarvitaan, että kaikki objektit saadaa esitettyä, kun yhdelle sivulle 
+ * mahtuu korkeintaan [itemsPerPage] objektia
+ * Sivutukseen tarvittava tieto
+ */
+const getNumberOfPagesTotal = (state, itemsTotal) => {
+
+    //let pagesTotal = state.totalPages;
+    let pagesTotal = 0;
+    let itemsPerPage = state.itemsPerPage;
+
+    if(itemsTotal > 0 && itemsPerPage > 0)
+        pagesTotal = (Math.ceil(itemsTotal / itemsPerPage))
+
+    return pagesTotal
 }
 
 /*
+ * H A K U E H D O T  T Ä Y T T Ä V Ä T   E L O K U V A T
  * Palvelimelta on haettu yhteenvetotiedot kaikista kantaan tallennetuista elokuvista.
  * Poimintaan näistä käyttäjälle esitettävät elokuvat. Valintaan vaikuttaa mm.:
  * - onko jotain suodatettu
  * - kuinka elokuvat halutaan lajitella
+ * 
+ * Huom! Tässä vaiheessa ei vielä suoriteta sivutusta
  */
 const getPresentedMovieList = (allTheMovies, currentPage, itemsPerPage, search ,sortingField, sortingOrder) => {
 
@@ -109,21 +160,15 @@ const getPresentedMovieList = (allTheMovies, currentPage, itemsPerPage, search ,
         })
     }
 
-
-    return computedMovies.slice(
-        (currentPage - 1) * itemsPerPage,
-        (currentPage - 1) * itemsPerPage + itemsPerPage
-    );
-    
-
-
-    //return computedMovies;
+    return computedMovies;
 
 }
 
 /*
  * R E A C T I O N S   T O W A R D S    A C T I O N S
- */ 
+ * 
+ * Hakuehdon aiheuttamaan muutokseen reagointi:
+ */
 const setSearchSettings = (state, data) => {
 
     let searchStr = data.str;
@@ -138,14 +183,104 @@ const setSearchSettings = (state, data) => {
         state.sortingOrder
     );
 
+    /*
+     * Resetoidaan currentPage
+     */
+    let newCurrentPage = 1;
+
+    /*
+     * Sivutukseen tarvittava tieto
+     */
+    let itemsTotal = moviesToShow.length;
+    let pagesTotal = getNumberOfPagesTotal(state, itemsTotal);
+
+    /*
+     * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
+     */
+    moviesToShow = getVisibleMovies(moviesToShow, newCurrentPage, state.itemsPerPage)
+
+
+    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, pagesTotal);
+
     return {
         ...state,
+        currentPage: newCurrentPage,
         search: searchStr,
-        totalItems: moviesToShow.length,
-        visibleMovies: moviesToShow
+        totalItems: itemsTotal,
+        visibleMovies: moviesToShow,
+        totalPages: pagesTotal,
+        paginationLinks: paginationLinks
     }
 }
 
+/*
+ * Asetetaan aktiivisen sivun sisältö.
+ */
+const setCurretPage = (state, data) => {
+
+    let newCurrentPage = data.page;
+
+    // - päivitetään kävijälle näytettävä elokuvalistaus
+    let moviesToShow = getPresentedMovieList(
+        state.allTheMovies, 
+        newCurrentPage, 
+        state.itemsPerPage,
+        state.search, 
+        state.sortingField, 
+        state.sortingOrder
+    );
+
+    /*
+     * Sivutukseen tarvittava tieto
+     */
+    let itemsTotal = moviesToShow.length;
+    let pagesTotal = getNumberOfPagesTotal(state, itemsTotal);
+
+    /*
+     * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
+     */
+    moviesToShow = getVisibleMovies(moviesToShow, newCurrentPage, state.itemsPerPage)
+
+    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, pagesTotal);
+
+    return {
+        ...state,
+        totalItems: itemsTotal,
+        totalPages: pagesTotal,
+        visibleMovies: moviesToShow,
+        paginationLinks: paginationLinks,
+        currentPage: newCurrentPage
+    };
+}
+
+/*
+ * Asetetaan listaustyyppi
+ *
+ * Elokuvalistaus voidaan esittää joko taulukkomuodossa tai kuvakkeina.
+ * 
+ */
+const setDisplayType = (state, data) => {
+
+    let updatedTypes = state.displayTypes.map(type => {
+
+        let newState = type.name === data.type?true:false;
+
+        return {
+            ...type,
+            active: newState
+        }
+    })
+
+    return {
+        ...state,
+        displayTypes: updatedTypes
+    }
+
+}
+
+/*
+ * Lajittelujärjestyksen muutos
+ */
 const setSortingSettings = (state, data)  => {
 
     let newField = data.field;
@@ -161,10 +296,21 @@ const setSortingSettings = (state, data)  => {
         newOrder
     );
 
+    let newCurrentPage = 1;
+
+   /*
+    * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
+    */
+    moviesToShow = getVisibleMovies(moviesToShow, newCurrentPage, state.itemsPerPage)
+
+    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, state.totalPages);
+
     return {
         ...state,
         sortingField: newField,
         sortingOrder: newOrder,
+        currentPage: newCurrentPage,
+        paginationLinks: paginationLinks,
         visibleMovies: moviesToShow 
     }
 }
@@ -172,6 +318,8 @@ const setSortingSettings = (state, data)  => {
 /*
  * Suodatetaan kaikki elokuvat sisältävästä listasta kävijälle näytettävät elokuvat
  * - missä järjestyksessä elokuvat listataan
+ * 
+ * @todo: Virhetilanteen käsittely puuttuupi
  */
 const displayMovieList = (state, data) => {
 
@@ -193,20 +341,235 @@ const displayMovieList = (state, data) => {
         state.sortingOrder
     );
 
+    /*
+     * Sivutukseen tarvittava tieto
+     */
+    let itemsTotal = moviesToShow.length;
+    let pagesTotal = getNumberOfPagesTotal(state, itemsTotal);
+
+    /*
+     * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
+     */
+    moviesToShow = getVisibleMovies(moviesToShow, state.currentPage, state.itemsPerPage)
+
+    let paginationLinks = getPaginationLinks(state.currentPage, state.maxNumberOfPaginationLinks, pagesTotal);
+
     return {
         ...state,
         allTheMovies: loadedMovieList,
         headers: getHeaders(),
         message: "Sovellus alustettu",
-        totalItems: moviesToShow.length,
-        visibleMovies: moviesToShow
+        paginationLinks: paginationLinks,
+        totalItems: itemsTotal,
+        totalPages: pagesTotal,
+        visibleMovies: moviesToShow,
+        loading: false
     };  
 
 }
 
+/*
+ * Sivutuslinkkien alustus
+ * - selvitetään mitkä sivut on pitää näyttää tulostettavassa Pagination listauksessa
+ * - muotoillaan linkit.
+ */
+const getPaginationLinks = (currentPage, maxNumberOfPaginationLinks, totalPages) => {
+    
+    let indexes = getPaginationIndexes(currentPage, maxNumberOfPaginationLinks, totalPages);
+
+    indexes = indexes.map((index,i) => {
+
+        let linkLabel = index;
+        let linkIindex = index;
+        let linkClass = "numb";
+
+        /*
+         * Korjataan tarvittaessa ensimmäinen linkki osoittamaan ensimmäiselle sivulle
+         */
+        if((i) === 0){
+            if(index > 1) {
+                linkIindex = 1
+                linkLabel = <SiFirst />
+                linkClass = "btn prev"
+            }
+        }
+
+        /*
+         * Korjataan tarvittaessa viimeinen linkki osoittamaan viimeiselle sivulle
+         */
+        if((i+1) === maxNumberOfPaginationLinks){
+            if(index < totalPages) {
+                linkIindex = totalPages
+                linkLabel = <SiLastpass />
+                linkClass = "btn next"
+            }
+        }
+
+        /* Aktiivisen sivun korostus */
+        if(index === currentPage)
+            linkClass="numb active"
+
+
+        return {
+            className: linkClass,
+            index: linkIindex,
+            label: linkLabel
+        }
+    })
+
+
+    return indexes
+}
+
+/*
+ * Lasketaan sivutuslinkeissä esitettävien sivut.
+ * - linkkien muodostamisen ensimmäinen vaihe
+ */
+const getPaginationIndexes = (currentPage, maxNumberOfPaginationLinks, totalPages) => {
+
+    let alaRaja = 1;
+    let vasen = true;           // Onko "vasemmalla tilaa"
+    let ylaRaja = totalPages;
+    let oikea = true;           // Onko "oikealla tilaa"
+
+    let i = 0;
+    let j = 1;                  // Kytkin jonka avulla laskurin arvoa käännetään positivisen ja negatiivisen välillä
+    let index = currentPage;
+
+    let indexes = [];
+
+    let valmis = false
+
+    do {
+        index = index + (i * j);
+
+        // lisätään sivu, mikäli indeksi taulukon sisällä
+        if((index >= alaRaja) && (index <= ylaRaja))
+            indexes.push(index)
+
+        /*
+         * Onko taulukossa vielä pienempiä / suurempia indeksejä
+         */
+        if(index === alaRaja)
+            vasen = false;
+
+        if(index === ylaRaja)
+            oikea = false;
+
+        /*
+         * Jatketaanko silmukkaa
+         * - riittävä määrä sivuja kasassa
+         */
+        if(indexes.length === maxNumberOfPaginationLinks)
+            valmis = true;
+        
+
+        /*
+         * Sivulle mahtuu enemmän objekteja, kuin mitä kantaan on talletettu.
+         * Ei siis tarvetta sivutukselle.
+         * - numberOfItems > totalPages
+         */
+        if(vasen===false & oikea===false)
+            valmis = true;
+
+        // päivitetään laskurit
+        j *= -1;
+        i++;
+
+    }
+    while(valmis !== true)
+    //while(i < maxNumberOfPaginationLinks && valmis !== true)
+
+    return indexes.sort((a,b) => a - b);
+}
+
+/*
+ * Sivulla näytettävät elokuvat, kun sivutus otetaan huomioon.
+ */
+const getVisibleMovies = (moviesUpToLevel, currentPage, itemsPerPage) => {
+
+    return moviesUpToLevel.slice(
+        (currentPage - 1) * itemsPerPage,
+        (currentPage - 1) * itemsPerPage + itemsPerPage
+    );
+
+}
+
+
 /* 
  * A C T I O N S
  */ 
+export const bar = () => {
+
+    return (dispatch, state) => {
+
+        dispatch({
+            type: 'LOADING_START',
+            data: {}
+        })
+
+        setTimeout(() => {
+
+            dispatch({
+                type: 'LOADING_END',
+                data: {}
+            })
+
+        }, 2000)
+
+    }
+
+
+    
+}
+
+/*
+ * - kytke loading päälle
+ * - hae elokuvat
+ * - muokkaa vastaus tai totea virhe
+ * - kytke loading off
+ */
+export const initializeMovies = () => {
+
+    return async dispatch => {
+
+        dispatch({
+            type: 'LOADING_START',
+            data: {}
+        })
+
+        const movies = await moviesService.getGeneralListing();
+
+        dispatch({
+            type: 'INITIALIZED',
+            data: movies
+        })
+    }
+}
+
+
+export const updateDisplayType = (val) => {
+
+    return dispatch => {
+
+        dispatch({
+            type: 'MOVIELIST_SET_DISPLAY_TYPE',
+            data: val
+        })
+    }
+}
+
+export const updateCurretPage = (val) => {
+
+    return dispatch => {
+
+        dispatch({
+            type: 'MOVIELIST_SET_CURRENT_PAGE',
+            data: val
+        })
+    }
+}
+
 export const updateSearchSetting = (val) => {
 
     return dispatch => {
@@ -229,18 +592,6 @@ export const updateSortingSetting = (val) => {
     }
 }
 
-export const initializeMovies = () => {
-
-    return async dispatch => {
-        const movies =  await moviesService.getGeneralListing();
-
-        dispatch({
-            type: 'INITIALIZED',
-            data: movies
-        })
-    }
-}
-
 const movieListReducer = (state = initialState, action) => {
 
     switch(action.type) {
@@ -253,6 +604,32 @@ const movieListReducer = (state = initialState, action) => {
 
         case 'MOVIELIST_UPDATE_SEARCH':
             return setSearchSettings(state, action.data);
+
+        case 'MOVIELIST_SET_CURRENT_PAGE':
+            return setCurretPage(state, action.data);
+
+        case 'MOVIELIST_SET_DISPLAY_TYPE':
+            return setDisplayType(state, action.data);
+
+        case 'LOADING_START':
+
+            console.log('LOADING_START');
+
+            return {
+                ...state,
+                loading: true
+            }
+
+        case 'LOADING_END':
+
+            console.log('LOADING_END');
+
+            return {
+                ...state,
+                allTheMovies: [],
+                visibleMovies: [],
+                loading: false
+            }
 
         default:
             return state;

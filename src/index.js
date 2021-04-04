@@ -6,8 +6,10 @@ import {
 } from 'react-router-dom'
 
 import {Provider} from "react-redux"
-
 import store from "./store"
+
+import {ThemeProvider} from "styled-components";
+import theme from "./components/generalLayout/theme";
 
 import App from './App';
 
@@ -17,12 +19,13 @@ import App from './App';
  *
  * Ilmeisesti router pitää olla pystyssä, ennen kuin reititettäviä komponentteja aletaan esittelemään
  * - https://stackoverflow.com/questions/63712504/react-router-v5-1-0-cannot-read-property-location-of-undefined
- * 
  */
 ReactDOM.render(
   <Provider store={store}>
     <Router basename="/tahtisade">
-      <App />
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
     </Router>
   </Provider>,
   document.getElementById('root')
