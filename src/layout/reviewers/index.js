@@ -9,36 +9,38 @@ import {
     PaginationAndSearch
 } from "../../components/generalLayout/elements";
 
-import GenreList from "../../components/genreList";
+import ReviewerList from "../../components/reviewerList";
 import Pagination from "../../components/movieList/Pagination/GeneralPagination";
 import Search from "../../components/DT/Search";
 
 import {updateSearchSetting} from "../../reducers/sharedReducer"
 
-/*
- *onSearch={(val) => dispatch(updateSearchSetting({str: val}))}
- */
-const Genres = () => {
+const Reviewers = () => {
 
     const dispatch = useDispatch()
 
+    /*
+                <Pagination 
+                    store="reviewers"
+                />
+    */
     return (
         <Container>
             
             <PaginationAndSearch>
-                <Pagination 
-                    store="genres"
-                />
+
                 <Search 
                     onSearch={(val) => dispatch(updateSearchSetting({
-                        store: 'genres',
+                        store: 'reviewers',
                         str: val
                     }))}
                 />
+
             </PaginationAndSearch>
+
             <ContentWrap>
                 <Main>
-                    <GenreList />
+                    <ReviewerList />
                 </Main>
                 <Aside>
                     Tähän työkalut
@@ -49,4 +51,4 @@ const Genres = () => {
     );
 };
 
-export default Genres;
+export default Reviewers;

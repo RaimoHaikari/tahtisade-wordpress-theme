@@ -2,7 +2,7 @@ import React from 'react';
 import moviesService from '../services/movies';
 
 import Card from "../components/movieList/Card";
-import TablePresentation from "../components/movieList/TablePresentation"
+import TablePresentation from "../components/movieList/TablePresentation/generalTable"
 
 import {
     SiFirst,
@@ -16,7 +16,7 @@ const DISPLAYTYPE = [
     {
         name: 'Taulukko',
         active: true,
-        content: <TablePresentation />
+        content: <TablePresentation store='movies' />
     },
     {
         name: 'Kuvakkeet',
@@ -47,16 +47,21 @@ const round = (value, precision) => {
  * How to compute the sum and average of elements in an array?
  * - https://stackoverflow.com/questions/10359907/how-to-compute-the-sum-and-average-of-elements-in-an-array
  */
-const average = arr => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
+const average = arr => arr.reduce( (p, c ) => p + c, 0 ) / arr.length;
 
 /*
+ * Huom!
+ * 
+ * Jotta yhteistä, lajiteltavaa taulukkoa voi käyttää, pitää reducerin tarjota tämän
+ * tyyppinen headers -taulukko.
+ * 
  * @todo: Pitäisikö lukea palvelimelta
  */
 const getHeaders = () => {
     return [
-        { name: "Nimi", field: "nimi", sortable: true },
-        { name: "Arvosteluja yht.", field: "numberOfReviews",  sortable: true},
-        { name: "Keskiarvo", field: "averageOfReviews",  sortable: false}
+        { name: "Nimi", field: "nimi", sortable: true, searchable: true },
+        { name: "Arvosteluja yht.", field: "numberOfReviews",  sortable: true, searchable: false},
+        { name: "Keskiarvo", field: "averageOfReviews",  sortable: false, searchable: false}
     ];
 }
 
@@ -71,13 +76,13 @@ const getHeaders = () => {
  * sortingField: Minkä kentän mukaan taulukkomuotoinen esitys lajitellaan
  * sortingOrder: Lajittelu järjestys
  * totalItems: Ehdot täyttävien elokuvien lkm mahdollinen hakuterminja/tai genre-rajauksen aiheuttama suodatus huomioidaan 
- * visibleMovies: Listalla esitettävät elokuvat. Mitä jää jäljelle, kun hakuehdot kohdistetaan elokuvalistaan.
+ * visibleData: Listalla esitettävät elokuvat. Mitä jää jäljelle, kun hakuehdot kohdistetaan elokuvalistaan.
  */
 const initialState = {
     allTheMovies: null,
     currentPage: 1,
     displayTypes: DISPLAYTYPE,
-    headers: [],
+    headers: [], // Huom! Pitää olla jotta tieto voidaan esittää taulukossa
     itemsPerPage: 7,
     loading: false,
     message: 'Aloitustervehdys',
@@ -88,7 +93,7 @@ const initialState = {
     sortingOrder: '',
     totalItems: 0,  // näytettävien objektien kokonaismäärä
     totalPages: 0,  // kuinka monta sivua tarvitaan, kun kerralla näytetään itemsPerPage objektia sivulla
-    visibleMovies: null
+    visibleData: null
 }
 
 
@@ -207,7 +212,7 @@ const setSearchSettings = (state, data) => {
         currentPage: newCurrentPage,
         search: searchStr,
         totalItems: itemsTotal,
-        visibleMovies: moviesToShow,
+        visibleData: moviesToShow,
         totalPages: pagesTotal,
         paginationLinks: paginationLinks
     }
@@ -247,7 +252,7 @@ const setCurretPage = (state, data) => {
         ...state,
         totalItems: itemsTotal,
         totalPages: pagesTotal,
-        visibleMovies: moviesToShow,
+        visibleData: moviesToShow,
         paginationLinks: paginationLinks,
         currentPage: newCurrentPage
     };
@@ -311,7 +316,7 @@ const setSortingSettings = (state, data)  => {
         sortingOrder: newOrder,
         currentPage: newCurrentPage,
         paginationLinks: paginationLinks,
-        visibleMovies: moviesToShow 
+        visibleData: moviesToShow 
     }
 }
 
@@ -362,7 +367,7 @@ const displayMovieList = (state, data) => {
         paginationLinks: paginationLinks,
         totalItems: itemsTotal,
         totalPages: pagesTotal,
-        visibleMovies: moviesToShow,
+        visibleData: moviesToShow,
         loading: false
     };  
 
@@ -519,8 +524,6 @@ export const bar = () => {
 
     }
 
-
-    
 }
 
 /*
@@ -547,7 +550,9 @@ export const initializeMovies = () => {
     }
 }
 
-
+/*
+ * @todo: Voi poista, kun generalTabs on käytettävissä
+ */
 export const updateDisplayType = (val) => {
 
     return dispatch => {
@@ -559,17 +564,9 @@ export const updateDisplayType = (val) => {
     }
 }
 
-export const updateCurretPage = (val) => {
-
-    return dispatch => {
-
-        dispatch({
-            type: 'MOVIELIST_SET_CURRENT_PAGE',
-            data: val
-        })
-    }
-}
-
+/*
+ * @todo: Voidaan poistaa, kun sharedReducer käytössä
+ */
 export const updateSearchSetting = (val) => {
 
     return dispatch => {
@@ -581,6 +578,9 @@ export const updateSearchSetting = (val) => {
     }
 }
 
+/*
+ * @tooo: voidaan poistaa 9.4.2021. Dispatchaus siirretty sharedReduceriin
+ */
 export const updateSortingSetting = (val) => {
 
     return dispatch => {
@@ -596,6 +596,9 @@ const movieListReducer = (state = initialState, action) => {
 
     switch(action.type) {
 
+        /*
+         * dispatch tapahtuu sharedReducerissa
+         */
         case 'MOVIELIST_UPDATE_SORTING':
             return setSortingSettings(state, action.data);
 
@@ -622,14 +625,22 @@ const movieListReducer = (state = initialState, action) => {
 
         case 'LOADING_END':
 
-            console.log('LOADING_END');
-
             return {
                 ...state,
                 allTheMovies: [],
-                visibleMovies: [],
+                visibleData: [],
                 loading: false
             }
+    
+/*
+ * P O I S T A .....
+ */
+ case 'GENRELIST_INITIALIZED':
+
+    return {
+        ...state,
+        headers: getHeaders()
+    }
 
         default:
             return state;

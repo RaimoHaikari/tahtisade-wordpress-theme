@@ -19,7 +19,7 @@ import {
 
 const Card = () => {
 
-    const {visibleMovies} = useSelector(state => state.movies);
+    const {visibleData} = useSelector(state => state.movies);
 
 
     const drawCard = (movie) => {
@@ -72,8 +72,8 @@ const Card = () => {
     return (
         <WRAPPER className="kuvakeRapperi">
             { 
-                visibleMovies 
-                ? visibleMovies.map(movie => drawCard(movie))
+                visibleData
+                ? visibleData.map(movie => drawCard(movie))
                 : null
             }
         </WRAPPER>

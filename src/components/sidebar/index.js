@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
     CloseIcon,
     Icon,
@@ -25,6 +26,9 @@ const Sidebar = ({isOpen, toggle}) => {
                     </Linkki>
                     <Linkki to='/genres'>
                         Genret
+                    </Linkki>
+                    <Linkki to='/reviewers'>
+                        Kriitikot
                     </Linkki>
                 </SidebarMenu>
 

@@ -4,11 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import parse from 'html-react-parser';
 
-import {
-    bar,
-    initializeMovies,
-    updateSortingSetting
-} from "../../../reducers/movieListReducer";
+import { updateSortingSetting } from "../../../reducers/sharedReducer";
 
 //import {Link} from 'react-router-dom';
 
@@ -23,16 +19,17 @@ import {
     TD
 } from './elements';
 
-const TablePresentation = () => {
+const GeneralTable = ({store}) => {
 
     const dispatch = useDispatch();
 
-    const {headers, message, visibleData, search, sortingField, sortingOrder} = useSelector(state => state.movies);
+    const {headers,search, sortingField, sortingOrder, visibleData} = useSelector(state => state[store]);
 
     const onSortingChange = (field)  => {
-
-        dispatch(updateSortingSetting({field: field}));
-
+        dispatch(updateSortingSetting({
+            field: field,
+            store: store
+        }));
     }
 
     const emphasizeSearched = (str) => {
@@ -44,8 +41,9 @@ const TablePresentation = () => {
     }
 
     const displayTable = () => {
+
         return (
-            <TABLE className="taulukko">
+            <TABLE>
                 <THEAD>
                     <TR>
                     {
@@ -55,7 +53,7 @@ const TablePresentation = () => {
                                             sortingField = {(sortingField && sortingField === header.field)}
                                             sortable = {header.sortable}
                                             key={header.field}
-                                            onClick={() => header.sortable ? onSortingChange(header.field) :null}
+                                            onClick={() => header.sortable ?  onSortingChange(header.field) :null}
                                         >
                                             {
                                                 (sortingField && sortingField === header.field)
@@ -73,39 +71,44 @@ const TablePresentation = () => {
                 </THEAD>
                 <TBODY>
                     {
-                        visibleData.map(m => {
+                        visibleData.map((m, index) => {
+
                             return (
-                                <TR key={m.id}>
-                                    <TD before="Nimi">
-                                        {
-                                            search !== ''
-                                            ? emphasizeSearched(m.nimi)
-                                            : m.nimi
-                                        }</TD>
-                                    <TD before="Arvosteluja">{m.numberOfReviews}</TD>
-                                    <TD before="Keskiarvo">{m.averageOfReviews}</TD>
+                                <TR key={index}>
+                                    {
+                                        headers.map((header, index) => {  
+
+                                            return (
+                                                <TD before={header.name}>
+                                                    {
+                                                        search !== '' && header.searchable
+                                                        ? emphasizeSearched(m[header.field])
+                                                        : m[header.field]
+                                                    }
+                                                </TD>
+                                            );
+                                        })
+                                    }
                                 </TR>
                             )
                         })
                     }
-                </TBODY>
+                </TBODY>               
             </TABLE>   
         )
     }
 
     /*
-     *
+     * return <TD before={header.name}>{m[header.field]}</TD>;
      */
     return (
         <>
             {
-                visibleData
-                ? displayTable()
-                : null
+                displayTable()
             }
         </>
     );
 };
 
 
-export default TablePresentation;
+export default GeneralTable;

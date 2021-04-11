@@ -71,6 +71,11 @@ const Navbar = ({toggle}) => {
                                     to='/genres'
                                 >Genret</Linkki>
                             </NavItem>
+                            <NavItem>
+                                <Linkki 
+                                    to='/reviewers'
+                                >Kriitikot</Linkki>
+                            </NavItem>
 
                         </NavMenu>
 
