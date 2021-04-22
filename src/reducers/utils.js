@@ -87,6 +87,41 @@ export const genreListMockData = [
     { genre: "Mystery", numberOfMovies: 2, numberOfReviews: 5, starsAverage: 2.8 }
 ];
 
+/*
+["Action","Adventure","Animation","Biography","Comedy","Crime","Documentary","Drama","Family","History","Horror","Mystery","Romance","Sci-Fi","Sport","Thriller","War"]
+*/
+export const genreNamesMockData = [
+    {name: "Action", id: 5, display: false},
+    {name: "Adventure", id: 1, display: false},
+    {name: "Animation", id: 12, display: false},
+    {name: "Biography", id: 18, display: false},
+    {name: "Comedy", id: 2, display: true},
+]
+
+export const genreNamesMockDataPPP = [
+    {name: "Action", id: 5, display: true},
+    {name: "Adventure", id: 1, display: true},
+    {name: "Animation", id: 12, display: true},
+    {name: "Biography", id: 18, display: true},
+    {name: "Comedy", id: 2, display: true},
+    {name: "Crime", id: 6, display: true},
+    {name: "Documentary", id: 9, display: true},
+    {name: "Drama", id: 8, display: true},
+    {name: "Family", id: 4, display: true},
+    {name: "Fantasy", id: 3, display: true},
+    {name: "History", id: 17, display: true},
+    {name: "Horror", id: 15, display: true},
+    {name: "Mystery", id: 10, display: true},
+    {name: "Music", id: 20, display: true},
+    {name: "Romance", id: 11, display: true},
+    {name: "Sci-Fi", id: 16, display: true},
+    {name: "Sport", id: 21, display: true},
+    {name: "Short", id: 23, display: true},
+    {name: "News", id: 22, display: true},
+    {name: "Thriller", id: 7, display: true},
+    {name: "War", id: 19, display: true},
+    {name: "Western", id: 13, display: true}
+]
 
 /*
  * Montako sivua tarvitaan, että kaikki objektit saadaa esitettyä, kun yhdelle sivulle 
@@ -160,6 +195,57 @@ export const getPaginationLinks = (currentPage, maxNumberOfPaginationLinks, tota
 }
 
 /*
+ * Suodatuksen yleisversio
+ * 
+ * - haku kohdistuu ainoastaan nimeen
+ */
+export const getPresentedItemsList = (allTheItems, search ,sortingField, sortingOrder) => {
+
+    let computedItems = allTheItems;
+
+    /*
+     * Haku
+     * - kohdistuu nimeen
+     */
+    if(search) {
+
+        computedItems = computedItems.filter(item => {
+
+            return (
+                item.name.toLowerCase().includes(search.toLowerCase()) 
+            )
+
+        })
+
+    }
+
+    /*
+     * Lajittelu
+     */
+    if(sortingField){
+        const reversed = sortingOrder === "asc" ? 1 : -1;
+
+        computedItems = computedItems.sort((a,b) => {
+
+            let val;
+
+            switch (sortingField) {
+                case "name":
+                  val = reversed * a[sortingField].localeCompare(b[sortingField])
+                  break;
+                default:
+                    val =  reversed * ((a[sortingField] > b[sortingField]) ? 1 : (a[sortingField] < b[sortingField]) ? -1 : 0)
+              }
+
+            return(val)
+        })
+
+    }
+
+    return computedItems;    
+}
+
+/*
  * Sivulla näytettävät objektit, kun sivutus otetaan huomioon.
  */
 export const getVisibleItems = (itemsUpToLevel, currentPage, itemsPerPage) => {
@@ -170,3 +256,45 @@ export const getVisibleItems = (itemsUpToLevel, currentPage, itemsPerPage) => {
     );
 
 }
+
+export const revierListMockData = [
+    {"id":"pekkaEronen","name":"Pekka Eronen","starsAverage":3,"numbOfRevies":9},
+    {"id":"janneKaakko","name":"Janne Kaakko","starsAverage":3.3333333333333335,"numbOfRevies":6},
+    {"id":"leenaVirtanen","name":"Leena Virtanen","starsAverage":3,"numbOfRevies":4},
+    {"id":"juhoTyppo","name":"Juho Typpö","starsAverage":2.8,"numbOfRevies":5},
+    {"id":"avola","name":"Pertti Avola","starsAverage":3,"numbOfRevies":12},
+    {"id":"kristerUggedal","name":"Krister Uggeldahl","starsAverage":2.8823529411764706,"numbOfRevies":17},
+    {"id":"päiviValotie","name":"Päivi Valotie","starsAverage":2.7142857142857144,"numbOfRevies":14},
+    {"id":"jarnoLindemark","name":"Jarno Lindemark","starsAverage":3.3333333333333335,"numbOfRevies":9},
+    {"id":"timoAlho","name":"Timo Alho","starsAverage":3.3636363636363638,"numbOfRevies":11},
+    {"id":"saraEH","name":"Sara Ehnholm Hielm","starsAverage":3.6666666666666665,"numbOfRevies":6},
+    {"id":"heikkiIkonen","name":"Heikki Ikonen","starsAverage":3.2222222222222223,"numbOfRevies":9},
+    {"id":"miskaRantanen","name":"Miska Rantanen","starsAverage":3.3333333333333335,"numbOfRevies":3},
+    {"id":"hwRehnstöm","name":"Henri Waltter Rehnström","starsAverage":3,"numbOfRevies":9},
+    {"id":"jussiUPellonpää","name":"Jussi U. Pellonpää","starsAverage":3.0833333333333335,"numbOfRevies":12},
+    {"id":"tr","name":"T R","starsAverage":3.25,"numbOfRevies":4},
+    {"id":"anttiSelkokari","name":"Antti Selkokari","starsAverage":3.6666666666666665,"numbOfRevies":3},
+    {"id":"kariSalminen","name":"Kari Salminen","starsAverage":3.1333333333333333,"numbOfRevies":15},
+    {"id":"aa","name":"A A","starsAverage":2.5,"numbOfRevies":2},
+    {"id":"riittaLehtimäki","name":"Riitta Lehtimäki","starsAverage":4.8,"numbOfRevies":5},
+    {"id":"vpLehtonen","name":"Veli-Pekka Lehtonen","starsAverage":3.5,"numbOfRevies":2},
+    {"id":"jussiVirratvuori","name":"Jussi Virratvuori","starsAverage":4,"numbOfRevies":10},
+    {"id":"hannaHyväri","name":"Hanna Hyväri","starsAverage":3,"numbOfRevies":1},
+    {"id":"tuomoYrittiaho","name":"Tuomo Yrittiaho","starsAverage":2.5,"numbOfRevies":4},
+    {"id":"martinaMolisMelberg","name":"Martina Moliis-Mellberg","starsAverage":2.75,"numbOfRevies":8},
+    {"id":"lauraHallamaa","name":"Laura Hallamaa","starsAverage":2,"numbOfRevies":1},
+    {"id":"sannaWirratvuori","name":"Sanna Wirtavuori","starsAverage":4,"numbOfRevies":4},
+    {"id":"heini lehtosalo","name":"Heini Lehtosalo","starsAverage":4,"numbOfRevies":3},
+    {"id":"riikkaOksanen","name":"Riikka Oksanen","starsAverage":4.5,"numbOfRevies":1},
+    {"id":"susannaKarhapää","name":"Susanna Karhapää","starsAverage":2,"numbOfRevies":1},
+    {"id":"olli-mattiOinonen","name":"Olli-Matti Oinonen","starsAverage":5,"numbOfRevies":1},
+    {"id":"sebastianGranskog","name":"Sebastian Granskog","starsAverage":4,"numbOfRevies":1},
+    {"id":"ek","name":"E K","starsAverage":4,"numbOfRevies":1},
+    {"id":"hannuLiekso","name":"Hannu Liekso","starsAverage":1,"numbOfRevies":1},
+    {"id":"jussiHuhtala","name":"Jussi Huhtala","starsAverage":3.5,"numbOfRevies":2},
+    {"id":"jesseRaatikainen","name":"Jesse Raatikainen","starsAverage":4,"numbOfRevies":1},
+    {"id":"jouniVikman","name":"Jouni Vikman","starsAverage":3.5,"numbOfRevies":2},
+    {"id":"martaBalaga","name":"Marta Balaga","starsAverage":2,"numbOfRevies":2},
+    {"id":"mariaLättilä","name":"Maria Lättilä","starsAverage":2,"numbOfRevies":2},
+    {"id":"eijaNiskanen","name":"Eija Niskanen","starsAverage":4.125,"numbOfRevies":4}
+]

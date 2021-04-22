@@ -29,6 +29,10 @@ const Reviewers = () => {
             
             <PaginationAndSearch>
 
+                <Pagination 
+                    store="reviewers"
+                />
+
                 <Search 
                     onSearch={(val) => dispatch(updateSearchSetting({
                         store: 'reviewers',

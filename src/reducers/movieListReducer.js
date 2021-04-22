@@ -4,10 +4,14 @@ import moviesService from '../services/movies';
 import Card from "../components/movieList/Card";
 import TablePresentation from "../components/movieList/TablePresentation/generalTable"
 
+import {genreNamesMockData} from "./utils";
+
 import {
     SiFirst,
     SiLastpass
 } from "react-icons/si"
+
+
 
 
 
@@ -83,8 +87,10 @@ const initialState = {
     currentPage: 1,
     displayTypes: DISPLAYTYPE,
     headers: [], // Huom! Pitää olla jotta tieto voidaan esittää taulukossa
-    itemsPerPage: 7,
-    loading: false,
+    genreNames: null,
+    genreNamesLoading: false,
+    itemsPerPage: 25,
+    moviesLoading: false,
     message: 'Aloitustervehdys',
     maxNumberOfPaginationLinks: 5,
     paginationLinks: [],
@@ -115,6 +121,26 @@ const getNumberOfPagesTotal = (state, itemsTotal) => {
 }
 
 /*
+ *
+ */ 
+const getActiveMovies = (allTheMovies, genreNames) => {
+
+    const activeGenres = genreNames
+        .filter(g => g.display === true)
+        .map(g => g.id)
+
+    const activeMovies = allTheMovies
+        .filter((movie) => {
+            const gList = movie.genre;
+            const found = gList.some(g => activeGenres.indexOf(g) >= 0)
+
+            return found
+        })
+    
+    return activeMovies
+}
+
+/*
  * H A K U E H D O T  T Ä Y T T Ä V Ä T   E L O K U V A T
  * Palvelimelta on haettu yhteenvetotiedot kaikista kantaan tallennetuista elokuvista.
  * Poimintaan näistä käyttäjälle esitettävät elokuvat. Valintaan vaikuttaa mm.:
@@ -123,9 +149,17 @@ const getNumberOfPagesTotal = (state, itemsTotal) => {
  * 
  * Huom! Tässä vaiheessa ei vielä suoriteta sivutusta
  */
-const getPresentedMovieList = (allTheMovies, currentPage, itemsPerPage, search ,sortingField, sortingOrder) => {
+const getPresentedMovieList = (allTheMovies, currentPage, itemsPerPage, search ,sortingField, sortingOrder, genreNames) => {
 
     let computedMovies = allTheMovies;
+
+    /*
+     * Rajatus genremäärityksen perusteella
+     * - käytössä vasta kun genreluettelo on ladattu
+     */
+    if(genreNames){
+        computedMovies = getActiveMovies(computedMovies, genreNames) 
+    }
 
     /*
      * Haku
@@ -185,7 +219,8 @@ const setSearchSettings = (state, data) => {
         state.itemsPerPage,
         searchStr, 
         state.sortingField, 
-        state.sortingOrder
+        state.sortingOrder,
+        state.genreNames
     );
 
     /*
@@ -232,7 +267,8 @@ const setCurretPage = (state, data) => {
         state.itemsPerPage,
         state.search, 
         state.sortingField, 
-        state.sortingOrder
+        state.sortingOrder,
+        state.genreNames
     );
 
     /*
@@ -298,7 +334,8 @@ const setSortingSettings = (state, data)  => {
         state.itemsPerPage,
         state.search, 
         newField, 
-        newOrder
+        newOrder,
+        state.genreNames
     );
 
     let newCurrentPage = 1;
@@ -314,6 +351,44 @@ const setSortingSettings = (state, data)  => {
         ...state,
         sortingField: newField,
         sortingOrder: newOrder,
+        currentPage: newCurrentPage,
+        paginationLinks: paginationLinks,
+        visibleData: moviesToShow 
+    }
+}
+
+/*
+ * Alustetaan listaus kantaan talletetuista genremäärityksistä
+ */
+const displayGenreList = (state, data) => {
+
+    let newGenreNames = data
+
+    let moviesToShow = getPresentedMovieList(
+        state.allTheMovies,
+        state.currentPage, 
+        state.itemsPerPage, 
+        state.search, 
+        state.sortingField, 
+        state.sortingOrder,
+        newGenreNames
+    );
+
+
+    let newCurrentPage = 1;
+
+   /*
+    * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
+    */
+    moviesToShow = getVisibleMovies(moviesToShow, newCurrentPage, state.itemsPerPage)
+
+    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, state.totalPages);
+
+
+    return {
+        ...state,
+        genreNames: newGenreNames,
+        genreNamesLoading: false,
         currentPage: newCurrentPage,
         paginationLinks: paginationLinks,
         visibleData: moviesToShow 
@@ -343,7 +418,8 @@ const displayMovieList = (state, data) => {
         state.itemsPerPage, 
         state.search, 
         state.sortingField, 
-        state.sortingOrder
+        state.sortingOrder,
+        state.genreNames
     );
 
     /*
@@ -368,7 +444,7 @@ const displayMovieList = (state, data) => {
         totalItems: itemsTotal,
         totalPages: pagesTotal,
         visibleData: moviesToShow,
-        loading: false
+        moviesLoading: false
     };  
 
 }
@@ -489,6 +565,97 @@ const getPaginationIndexes = (currentPage, maxNumberOfPaginationLinks, totalPage
 }
 
 /*
+ * Muutetaan yksittäisen genren näkyvyyttä elokuvalistauksessa
+ */
+const setSingleGenreState = (state, data) => {
+
+    // - genrelistauksen päivitys
+    let newGenreNames = state.genreNames.map(g => {
+
+        let newDisplay = g.display
+
+        if(g.id === data){
+            newDisplay = !newDisplay
+        }
+
+        return {
+            ...g,
+            display: newDisplay
+        };
+    })
+
+    // elokuvalista vastaamaan genre-suodatusta
+    let moviesToShow = getPresentedMovieList(
+        state.allTheMovies,
+        state.currentPage, 
+        state.itemsPerPage, 
+        state.search, 
+        state.sortingField, 
+        state.sortingOrder,
+        newGenreNames
+    );
+
+    let newCurrentPage = 1;
+
+   /*
+    * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
+    */
+    moviesToShow = getVisibleMovies(moviesToShow, newCurrentPage, state.itemsPerPage)
+
+    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, state.totalPages);
+
+    return {
+        ...state,
+        genreNames: newGenreNames,
+        currentPage: newCurrentPage,
+        paginationLinks: paginationLinks,
+        visibleData: moviesToShow
+    }
+}
+
+/*
+ * Kytketään tai sammutetaan kaikki genrelistauksen objetit
+ */
+const toggleGenreList = (state, data) => {
+
+    let newGenreNames = state.genreNames.map(g => {
+        return {
+            ...g,
+            display: data
+        }
+    })
+
+
+    // elokuvalista vastaamaan genre-suodatusta
+    let moviesToShow = getPresentedMovieList(
+        state.allTheMovies,
+        state.currentPage, 
+        state.itemsPerPage, 
+        state.search, 
+        state.sortingField, 
+        state.sortingOrder,
+        newGenreNames
+    );
+
+    let newCurrentPage = 1;
+
+   /*
+    * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
+    */
+    moviesToShow = getVisibleMovies(moviesToShow, newCurrentPage, state.itemsPerPage)
+
+    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, state.totalPages);
+
+    return {
+        ...state,
+        genreNames: newGenreNames,
+        currentPage: newCurrentPage,
+        paginationLinks: paginationLinks,
+        visibleData: moviesToShow
+    }
+}
+
+/*
  * Sivulla näytettävät elokuvat, kun sivutus otetaan huomioon.
  */
 const getVisibleMovies = (moviesUpToLevel, currentPage, itemsPerPage) => {
@@ -503,24 +670,36 @@ const getVisibleMovies = (moviesUpToLevel, currentPage, itemsPerPage) => {
 
 /* 
  * A C T I O N S
+
+
+        const movies = await moviesService.getGeneralListing();
+
+        dispatch({
+            type: 'INITIALIZED',
+            data: movies
+        })
+
+
  */ 
-export const bar = () => {
+export const doSomeThing = () => {
 
     return (dispatch, state) => {
 
         dispatch({
-            type: 'LOADING_START',
+            type: 'MOVIELIST_GENRENAMES_LOADING_START',
             data: {}
         })
 
         setTimeout(() => {
 
+            let gNames = genreNamesMockData;
+
             dispatch({
-                type: 'LOADING_END',
-                data: {}
+                type: 'MOVIELIST_GENRENAMES_LOADING_END',
+                data: gNames
             })
 
-        }, 2000)
+        }, 1000)
 
     }
 
@@ -546,6 +725,20 @@ export const initializeMovies = () => {
         dispatch({
             type: 'INITIALIZED',
             data: movies
+        })
+    }
+}
+
+/*
+ * @tooo: voidaan poistaa 9.4.2021. Dispatchaus siirretty sharedReduceriin
+ */
+export const toggleGenres = (val) => {
+
+    return dispatch => {
+
+        dispatch({
+            type: 'MOVIELIST_TOGGLE_GENRES',
+            data: val
         })
     }
 }
@@ -592,6 +785,20 @@ export const updateSortingSetting = (val) => {
     }
 }
 
+/*
+ * @tooo: voidaan poistaa 9.4.2021. Dispatchaus siirretty sharedReduceriin
+ */
+export const updateSingleGenreVisibility = (val) => {
+
+    return dispatch => {
+
+        dispatch({
+            type: 'MOVIELIST_UPDATE_SINGLE_GENRE',
+            data: val
+        })
+    }
+}
+
 const movieListReducer = (state = initialState, action) => {
 
     switch(action.type) {
@@ -608,6 +815,9 @@ const movieListReducer = (state = initialState, action) => {
         case 'MOVIELIST_UPDATE_SEARCH':
             return setSearchSettings(state, action.data);
 
+        case 'MOVIELIST_UPDATE_SINGLE_GENRE':
+            return setSingleGenreState(state, action.data);
+
         case 'MOVIELIST_SET_CURRENT_PAGE':
             return setCurretPage(state, action.data);
 
@@ -616,35 +826,28 @@ const movieListReducer = (state = initialState, action) => {
 
         case 'LOADING_START':
 
-            console.log('LOADING_START');
-
             return {
                 ...state,
-                loading: true
-            }
-
-        case 'LOADING_END':
-
-            return {
-                ...state,
-                allTheMovies: [],
-                visibleData: [],
-                loading: false
+                moviesLoading: true
             }
     
-/*
- * P O I S T A .....
- */
- case 'GENRELIST_INITIALIZED':
+        case 'MOVIELIST_GENRENAMES_LOADING_END':
 
-    return {
-        ...state,
-        headers: getHeaders()
-    }
+            return displayGenreList(state, action.data);
+
+        case 'MOVIELIST_GENRENAMES_LOADING_START':
+
+            return {
+                ...state,
+                genreNamesLoading: true
+            }
+
+        case 'MOVIELIST_TOGGLE_GENRES':
+            return toggleGenreList(state, action.data);
 
         default:
             return state;
-    }
+        }
 }
 
 export default movieListReducer;

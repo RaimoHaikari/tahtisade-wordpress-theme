@@ -28,6 +28,15 @@ export const updateCurretPage = (val) => {
 
                 break;
 
+            case 'reviewers': 
+
+                dispatch({
+                    type: 'REVIEWERLIST_SET_CURRENT_PAGE',
+                    data: {page: val.page}
+                });
+
+                break;
+
         }
     }
 }
@@ -60,6 +69,15 @@ export const updateDisplayType = (val) => {
 
                 break;
 
+            case 'reviewers': 
+                   
+                dispatch({
+                    type: 'REVIEWERLIST_SET_DISPLAY_TYPE',
+                    data: {type: val.type}
+                });
+
+                break;
+
         }
     }
 }
@@ -83,6 +101,16 @@ export const updateSearchSetting = (val) => {
 
                 dispatch({
                     type: 'MOVIELIST_UPDATE_SEARCH',
+                    data: {str: val.str}
+                });
+
+                break;
+
+
+            case 'reviewers': 
+
+                dispatch({
+                    type: 'REVIEWERLIST_UPDATE_SEARCH',
                     data: {str: val.str}
                 });
 
@@ -114,6 +142,15 @@ export const updateSortingSetting = (val) => {
                    
                 dispatch({
                     type: 'MOVIELIST_UPDATE_SORTING',
+                    data: {field: val.field}
+                });
+
+                break;
+
+            case 'reviewers': 
+                   
+                dispatch({
+                    type: 'REVIEWERLIST_UPDATE_SORTING',
                     data: {field: val.field}
                 });
 

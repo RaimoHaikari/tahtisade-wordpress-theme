@@ -13,11 +13,9 @@ const MovieList = () => {
 
     const dispatch = useDispatch();
 
-    const {loading, visibleData} = useSelector(state => state.movies);
+    const {moviesLoading, genreNamesLoading, visibleData} = useSelector(state => state.movies);
 
     const errorMsg = () => {
-
-        console.log("Error message");
 
         return(
             null
@@ -34,12 +32,18 @@ const MovieList = () => {
 
 
     /* 
-     *
+
+               loading === true
+               ? <Countdown />
+               : visibleData === null
+                    ? errorMsg()
+                    : <GeneralTabs store="movies" />
+
      */
     return (
         <>
             {
-               loading === true
+               (moviesLoading === true) || (genreNamesLoading === true)
                ? <Countdown />
                : visibleData === null
                     ? errorMsg()

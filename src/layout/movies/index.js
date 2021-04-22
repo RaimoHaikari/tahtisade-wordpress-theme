@@ -16,6 +16,7 @@ import {
 import Movies from "../../components/movieList";
 import Pagination from "../../components/movieList/Pagination/GeneralPagination";
 import Search from "../../components/DT/Search";
+import Genres from "../../components/movieList/Genres"
 
 /*
  * @todo: dispatch siirrettävä layout -tasolta komponettitasolle
@@ -48,7 +49,7 @@ const MovieList = () => {
                         <Movies />
                     </Main>
                     <Aside>
-                        Tähän työkalut
+                        <Genres />
                     </Aside>
                 </ContentWrap>
 

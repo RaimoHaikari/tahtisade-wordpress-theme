@@ -1,3 +1,11 @@
+/*
+ * Otetaan käyttöön index.js -tiedostossa
+ * import {ThemeProvider} from "styled-components";
+ * 
+ *    <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+ */
 const theme = {
     backgroundColor: '#411a35',
     defaultTextColor: 'navy',
@@ -18,13 +26,19 @@ const theme = {
         logoHeight: '70px',
         logoWidth: '70px',
         fontSize: '1.1rem',
-        txtColor: '#ffffff'
+        txtColor: 'red'
+        ///txtColor: '#ffffff'
     },
     sidebar: {
         txtColor: '#fcede8',
         txtHover: '#000',
         fontSize: '1.1rem',
+    },
+    default: {
+        fontSize: '0.9em',
+        checkBoxSize: '1.2em',
     }
+
 }
 
 
