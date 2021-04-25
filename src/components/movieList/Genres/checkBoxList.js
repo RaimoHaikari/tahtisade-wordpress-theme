@@ -19,7 +19,7 @@ const CheckBoxList = ({changeHanler, genres}) => {
                                 type="checkbox" 
                                 onChange={() => changeHanler(genre.id)}
                                 checked={genre.display}
-                            ></INPUT>
+                            />
                             <SPAN />                            
                         </LABEL>
                     )

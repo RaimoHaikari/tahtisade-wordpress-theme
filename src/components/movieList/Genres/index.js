@@ -2,12 +2,16 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
 import CheckBoxList from "./checkBoxList"
+import TextButton from "./textButton"
+
+import Togglable from "../../generalLayout/togglable"
 
 import {
     doSomeThing,
     toggleGenres,
     updateSingleGenreVisibility
 } from "../../../reducers/movieListReducer";
+
 
 const Genres = ({}) => {
 
@@ -19,46 +23,20 @@ const Genres = ({}) => {
         dispatch(updateSingleGenreVisibility(val))
     }
 
-    const bar = () => {
-        return (
-            <>
-                {selectAll()}
-                {selectNone()}
-                {displayGenreList()}
-            </>
-        )
-    }
-
-    const selectAll = () => {
-        return (
-            <button
-                onClick = {() => dispatch(toggleGenres(true))}
-            >
-                Valitse kaikki
-            </button>
-        )
-    }
-
-
-    const selectNone = () => {
-        return (
-            <button
-                onClick = {() => dispatch(toggleGenres(false))}
-            >
-                Tyhjennä
-            </button>
-        )
-    }
-
-    const displayGenreList = () => {
-
-        return (
-            <CheckBoxList
-                genres = {genreNames}
-                changeHanler = {changeHanler}
-            />
-        )
-    }
+    const x = [
+        {
+            title: "Valitse kaikki",
+            clickHanler: function(){
+                return dispatch(toggleGenres(true))
+            }
+        },
+        {
+            title: "Tyhjennnä valinnat",
+            clickHanler: function(){
+                return dispatch(toggleGenres(false))
+            }
+        }
+    ]
 
     useEffect(() => {
 
@@ -67,11 +45,20 @@ const Genres = ({}) => {
 
     }, [genreNames])
 
+    /*
+    *
+    */
     return (
         <div>
             {
                 genreNames
-                ? bar()
+                ?   <Togglable buttonLabel="Genres">
+                        <TextButton buttons = {x} />
+                        <CheckBoxList
+                            genres = {genreNames}
+                            changeHanler = {changeHanler}
+                        />
+                    </Togglable>
                 : "Lista puuttuu"
             }
         </div>

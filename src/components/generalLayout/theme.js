@@ -37,6 +37,10 @@ const theme = {
     default: {
         fontSize: '0.9em',
         checkBoxSize: '1.2em',
+    },
+    toolbar: {
+        backgroundColor: '#f7f6f5',
+        txtHover: 'red',
     }
 
 }

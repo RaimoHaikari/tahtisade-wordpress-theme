@@ -121,9 +121,16 @@ const getNumberOfPagesTotal = (state, itemsTotal) => {
 }
 
 /*
- *
+ * @todo: Joskus palauttaa allTehMoviesin nullina
  */ 
 const getActiveMovies = (allTheMovies, genreNames) => {
+
+    /*
+    console.log("...... getActiveMovies......")
+    console.log(allTheMovies)
+    console.log(genreNames)    
+    console.log("............................")
+    */
 
     const activeGenres = genreNames
         .filter(g => g.display === true)
