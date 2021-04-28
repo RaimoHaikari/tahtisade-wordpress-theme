@@ -71,15 +71,15 @@ const GeneralTable = ({store}) => {
                 </THEAD>
                 <TBODY>
                     {
-                        visibleData.map((m, index) => {
+                        visibleData.map((m, i) => {
 
                             return (
-                                <TR key={index}>
+                                <TR key={i}>
                                     {
                                         headers.map((header, index) => {  
 
                                             return (
-                                                <TD before={header.name}>
+                                                <TD before={header.name} key={index}>
                                                     {
                                                         search !== '' && header.searchable
                                                         ? emphasizeSearched(m[header.field])

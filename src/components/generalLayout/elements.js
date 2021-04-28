@@ -1,13 +1,19 @@
 import styled from 'styled-components';
 
 /*
- * background: #101522;
-    
+ * 
  */
 export const Container = styled.div`
     background: ${props => props.theme.backgroundColor};
 `;
 
+/*
+ * L U E T T E L O T
+ * 
+ * - E L O K U V A T
+ * - G E N R E T
+ * - A R V O S T E L I J A T
+ */
 export const PaginationAndSearch = styled.div`
 
     padding-top: ${props => props.theme.navbar.height};

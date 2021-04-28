@@ -64,7 +64,7 @@ const Navbar = ({toggle}) => {
                             <NavItem>
                                 <Linkki 
                                     to='/movies'
-                                >Elokuvatko</Linkki>
+                                >Elokuvat</Linkki>
                             </NavItem>
                             <NavItem>
                                 <Linkki 

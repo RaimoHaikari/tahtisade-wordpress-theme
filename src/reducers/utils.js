@@ -123,6 +123,35 @@ export const genreNamesMockDataPPP = [
     {name: "Western", id: 13, display: true}
 ]
 
+export const SingleMovieMockData = {
+    googleID:2,
+    nimi:"Emma.",
+    wiki:"Q65091224",
+    imdb:"tt9214832",
+    kavi:"kavi.elonet_elokuva_1613316",
+    img:"emma.jpg",
+    ensiIlta:"2020-03-06T00:00:00.000Z",
+    reviews:[
+        {criticID:"janneKaakko",googleID:2,"stars":4,link:"Aamulehti 6.3.2020",publisher:"Aamulehti",name:"Janne Kaakko"},
+        {criticID:"päiviValotie",googleID:2,stars:3,link:"Turun Sanomat 6.3.2020",publisher:"Turun Sanomat",name:"Päivi Valotie"},
+        {criticID:"jouniVikman",googleID:2,stars:3,link:"https://www.episodi.fi/elokuvat/emma/",publisher:"Episodi",name:"Jouni Vikman"}
+    ],
+    actors:[
+        {googleID:2,nimi:"Anya Taylor-Joy",kaviID:"elonet_henkilo_1530190"},
+        {googleID:2,nimi:"Johnny Flynn",kaviID:"elonet_henkilo_1514907"},
+        {googleID:2,nimi:"Bill Nighy",kaviID:"elonet_henkilo_230286"},
+        {googleID:2,nimi:"Mia Goth",kaviID:"elonet_henkilo_1530647"},
+        {googleID:2,nimi:"Myra McFadyen",kaviID:"elonet_henkilo_1544788"},
+        {googleID:2,nimi:"Josh O'Connor",kaviID:"elonet_henkilo_1532752"}
+    ],directors:[
+        {googleID:2,nimi:"Autumn de Wilde",kaviID:"elonet_henkilo_1544786"}
+    ],distributors:[
+        {googleID:2,nimi:"Finnkino Oy",kaviID:"elonet_yhtio_710434"}
+    ],
+    genres:[
+        {googleID:2,genre:"Comedy"},{googleID:2,genre:"Drama"}
+    ]};
+
 /*
  * Montako sivua tarvitaan, että kaikki objektit saadaa esitettyä, kun yhdelle sivulle 
  * mahtuu korkeintaan [itemsPerPage] objektia

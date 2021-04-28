@@ -27,7 +27,7 @@ const MovieList = () => {
         if(visibleData === null){
             dispatch(initializeMovies())
         }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [visibleData])
 
 

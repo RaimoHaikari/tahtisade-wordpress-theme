@@ -12,9 +12,6 @@ import {
 } from "react-icons/si"
 
 
-
-
-
 const DISPLAYTYPE = [
 
     {
@@ -384,13 +381,18 @@ const displayGenreList = (state, data) => {
 
     let newCurrentPage = 1;
 
+    /*
+     * Sivutukseen tarvittava tieto
+     */
+    let itemsTotal = moviesToShow.length;
+    let pagesTotal = getNumberOfPagesTotal(state, itemsTotal);
+
    /*
     * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
     */
     moviesToShow = getVisibleMovies(moviesToShow, newCurrentPage, state.itemsPerPage)
 
-    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, state.totalPages);
-
+    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, pagesTotal);
 
     return {
         ...state,
