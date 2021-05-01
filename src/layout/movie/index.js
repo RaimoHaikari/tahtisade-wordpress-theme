@@ -20,6 +20,7 @@ import Countdown from "../../components/Countdown"
 
 import {
     doSomeThing,
+    initializeMovie
 } from "../../reducers/singleMovieReducer";
 
 const Movie = () => {
@@ -30,11 +31,9 @@ const Movie = () => {
 
     const id = useParams().id;
 
-    console.log(`Valitun elokuvan tiedot: ${id}`)
-
     useEffect(() => {
 
-        dispatch(doSomeThing(id))
+        dispatch(initializeMovie(id))
         
     }, [])
 
@@ -61,7 +60,16 @@ const Movie = () => {
                             <Poster />
                         </Aside>
                         <Main>
-                            <MovieCard />
+                            <MovieCard 
+                                actors={data.actors}
+                                directors={data.directors}
+                                distributors={data.distributors}
+                                externalLinks={data.externalLinks}
+                                genre={data.genre}
+                                releaseDate={data.ensiIlta}                                
+                                title={data.nimi}
+                                writers={data.writers}
+                            />
                             <Reviews />
                         </Main>
                     </InfoCardWrapper>
@@ -69,5 +77,15 @@ const Movie = () => {
         </Container>
     );
 };
+
+/*
+                                actors={data.actors}
+                                directors={data.directors}
+                                distributors={data.distributors}
+                                ensiIlta={data.ensiIlta}
+                                genres={data.genres}
+
+
+*/
 
 export default Movie;

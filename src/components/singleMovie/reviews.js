@@ -1,10 +1,10 @@
 import React from 'react';
 
+import TablePresentation from "../../components/movieList/TablePresentation/generalTable"
+
 const Reviews = () => {
     return (
-        <div style={{height: "300px", background: "blue"}}>
-            Tähän arvostelut
-        </div>
+        <TablePresentation store="singleMovie" />
     );
 };
 

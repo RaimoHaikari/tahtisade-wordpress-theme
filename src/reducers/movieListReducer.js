@@ -414,8 +414,11 @@ const displayMovieList = (state, data) => {
 
     let loadedMovieList = data.map(d => {
 
+        let genres = d.genre.map(g => g.genreId)
+
         return {
             ...d,
+            genre: genres,
             numberOfReviews: d.stars.length,
             averageOfReviews: (d.stars.length===0?0:round(average(d.stars),2))
         }

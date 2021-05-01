@@ -93,7 +93,7 @@ const GeneralTable = ({store}) => {
                             )
                         })
                     }
-                </TBODY>               
+                </TBODY>       
             </TABLE>   
         )
     }
@@ -110,5 +110,34 @@ const GeneralTable = ({store}) => {
     );
 };
 
+/*
+
+
+                <TBODY>
+                    {
+                        visibleData.map((m, i) => {
+
+                            return (
+                                <TR key={i}>
+                                    {
+                                        headers.map((header, index) => {  
+
+                                            return (
+                                                <TD before={header.name} key={index}>
+                                                    {
+                                                        search !== '' && header.searchable
+                                                        ? emphasizeSearched(m[header.field])
+                                                        : m[header.field]
+                                                    }
+                                                </TD>
+                                            );
+                                        })
+                                    }
+                                </TR>
+                            )
+                        })
+                    }
+                </TBODY>       
+*/
 
 export default GeneralTable;

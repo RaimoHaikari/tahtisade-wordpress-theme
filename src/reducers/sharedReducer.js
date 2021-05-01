@@ -37,6 +37,7 @@ export const updateCurretPage = (val) => {
 
                 break;
 
+
         }
     }
 }
@@ -151,6 +152,16 @@ export const updateSortingSetting = (val) => {
                    
                 dispatch({
                     type: 'REVIEWERLIST_UPDATE_SORTING',
+                    data: {field: val.field}
+                });
+
+                break;
+
+
+            case 'singleMovie': 
+
+                dispatch({
+                    type: 'SINGLE_MOVIE_UPDATE_REVIEWS_SORTING',
                     data: {field: val.field}
                 });
 
