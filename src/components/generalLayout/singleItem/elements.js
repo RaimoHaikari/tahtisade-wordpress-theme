@@ -23,7 +23,7 @@ export const InfoCardWrapper = styled.div`
 
     display: flex;
 
-    @media screen and (max-width: 800px){
+    @media screen and (max-width: ${props => props.theme.breakPoints.md}){
         flex-direction: column;
     }
 
@@ -31,14 +31,30 @@ export const InfoCardWrapper = styled.div`
 
 
 export const Main = styled.main`
-    margin: 2px;
+
     background-color: ${props => props.theme.bgLight};
+
+    padding-bottom: 10px;
+
     flex: 2;
+    /*
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 600px;
+    */
+
 `;
 
 export const Aside = styled.aside`
-    margin: 2px;
-    background-color: yellow;
+
+    background-color: ${props => props.theme.bgLight};
+
     flex: 1;
+
+    /*
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 400px;
+    */
 
 `;

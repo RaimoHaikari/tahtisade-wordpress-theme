@@ -56,7 +56,7 @@ export const Main = styled.main`
 
 export const Aside = styled.aside`
     margin: 2px;
-    background-color: yellow;
+    background-color:  ${props => props.theme.backgroundColor};;
     flex: 1;
 
     @media screen and (max-width: 800px){

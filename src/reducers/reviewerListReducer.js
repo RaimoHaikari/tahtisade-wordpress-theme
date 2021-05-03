@@ -56,6 +56,20 @@ const displayReviewerList = (state, data) => {
 
     let loadedReviewerList  = revierListMockData;
 
+    /*
+     *
+     */
+    loadedReviewerList = loadedReviewerList.map(r => {
+
+        let productPage = `reviewers/${r.id}`;
+
+        return {
+            ...r,
+            productPage: productPage,   // Linkki kriitikon tiedot esittävälle sivulle
+        }
+
+    })
+
     let reviewersToShow = getPresentedItemsList(
         loadedReviewerList,
         state.search, 

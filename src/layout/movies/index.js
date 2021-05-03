@@ -11,7 +11,7 @@ import {
     ContentWrap,
     Main,
     PaginationAndSearch
-} from "../../components/generalLayout/elements"
+} from "../../components/generalLayout/itemList/elements"
 
 import Movies from "../../components/movieList";
 import Pagination from "../../components/movieList/Pagination/GeneralPagination";

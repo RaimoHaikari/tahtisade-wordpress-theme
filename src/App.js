@@ -15,7 +15,9 @@ import Elokuvat from "./layout/movies";
 import Elokuva from "./layout/movie";
 
 import Genret from './layout/genres'
+
 import Reviewers from './layout/reviewers'
+import SingleCritic from './layout/singleCritic'
 
 import Footer from "./components/footer";
 
@@ -60,6 +62,10 @@ const App = () => {
 
                 <Route path="/genres" >
                     <Genret />
+                </Route>
+
+                <Route path="/reviewers/:id">
+                    <SingleCritic />
                 </Route>
 
                 <Route path="/reviewers" >

@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import { useHistory } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
 
@@ -22,6 +23,7 @@ import {
 const GeneralTable = ({store}) => {
 
     const dispatch = useDispatch();
+    let history = useHistory();
 
     const {headers,search, sortingField, sortingOrder, visibleData} = useSelector(state => state[store]);
 
@@ -38,6 +40,13 @@ const GeneralTable = ({store}) => {
         let regexp = new RegExp(match, "gi");
 
         return parse(str.replace(regexp, replace))
+    }
+
+    const rowCliked = (d) => {
+
+        if(d.productPage){
+            history.push(d.productPage);
+        }
     }
 
     const displayTable = () => {
@@ -74,7 +83,10 @@ const GeneralTable = ({store}) => {
                         visibleData.map((m, i) => {
 
                             return (
-                                <TR key={i}>
+                                <TR 
+                                    className={m.productPage?'linkToDetails':null}
+onClick={() => rowCliked(m)}
+                                    key={i}>
                                     {
                                         headers.map((header, index) => {  
 

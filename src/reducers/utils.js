@@ -123,6 +123,80 @@ export const genreNamesMockDataPPP = [
     {name: "Western", id: 13, display: true}
 ]
 
+export const SingleReviwerMockData = {
+
+    reviews:[
+        {criticID:"kristerUggedal",googleID:6,stars:3,link:"Hufvudstadsbladet 13.3.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"La Belle Époque"},
+        {criticID:"kristerUggedal",googleID:15,stars:5,link:"Hufvudstadsbladet 24.1.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Taistelulähetit - 1917"},
+        {criticID:"kristerUggedal",googleID:17,stars:3,link:"Hufvudstadsbladet 24.1.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Just Mercy"},
+        {criticID:"kristerUggedal",googleID:19,stars:1,link:"Hufvudstadsbladet 3.1.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Cats (2019)"},
+        {criticID:"kristerUggedal",googleID:12,stars:4,link:"Hufvudstadsbladet 6.3.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Les Misérables"},
+        {criticID:"kristerUggedal",googleID:1,stars:3,link:"Hufvudstadsbladet 6.3.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Elämää kuoleman jälkeen"},
+        {criticID:"kristerUggedal",googleID:20,stars:3,link:"Hufvudstadsbladet 14.2.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"The Peanut Butter Falcon"},
+        {criticID:"kristerUggedal",googleID:21,stars:3,link:"Hufvudstadsbladet 14.2.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Heinähattu, Vilttitossu ja ärhäkkä koululainen"},
+        {criticID:"kristerUggedal",googleID:5,stars:2,link:"Hufvudstadsbladet 7.2.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"A Hidden Life"},
+        {criticID:"kristerUggedal",googleID:24,stars:4,link:"Hufvudstadsbladet 3.1.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Lasse - Best Man"},
+        {criticID:"kristerUggedal",googleID:25,stars:2,link:"Hufvudstadsbladet 3.1.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Teräsleidit"},
+        {criticID:"kristerUggedal",googleID:27,stars:3,link:"Hufvudstadsbladet 6.3.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Eteenpäin"},
+        {criticID:"kristerUggedal",googleID:30,stars:2,link:"Hufvudstadsbladet 21.2.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Koiranpäivät"},
+        {criticID:"kristerUggedal",googleID:32,stars:3,link:"Hufvudstadsbladet 28.2.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Erämaan kutsu"},
+        {criticID:"kristerUggedal",googleID:34,stars:3,link:"Hufvudstadsbladet 28.2.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"The Invisible Man"},
+        {criticID:"kristerUggedal",googleID:35,stars:4,link:"Hufvudstadsbladet 28.2.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"The Specials"},
+        {criticID:"kristerUggedal",googleID:40,stars:1,link:"Hufvudstadsbladet 17.1.2020",publisher:"Hufvudstadsbladet",name:"Krister Uggeldahl",elokuvanNimi:"Bad Boys for Life"}
+    ],
+    reviewerData:{
+        name:"Krister Uggeldahl"
+    },
+    defCompSet:[
+        {googleID:1,count:4,stars:3.5},
+        {googleID:5,count:3,stars:4},
+        {googleID:6,count:5,stars:3.4},
+        {googleID:12,count:6,stars:3.67},
+        {googleID:15,count:7,stars:4.14},
+        {googleID:17,count:5,stars:3},
+        {googleID:19,count:5,stars:2},
+        {googleID:20,count:5,stars:3.4},
+        {googleID:21,count:3,stars:3},
+        {googleID:24,count:2,stars:2.5},
+        {googleID:25,count:5,stars:2.8},
+        {googleID:27,count:1,stars:4},
+        {googleID:30,count:2,stars:1.5},
+        {googleID:32,count:3,stars:3},
+        {googleID:34,count:3,stars:3.33},
+        {googleID:35,count:3,stars:3.33},
+        {googleID:40,count:2,stars:1.5}
+    ],
+    reviewerWithShardItems:[
+        {id:"muutKriitikot",count:17,name:"Muut yhteensä"},
+        {id:"timoAlho",count:3,name:"Timo Alho"},
+        {id:"avola",count:6,name:"Pertti Avola"},
+        {id:"martaBalaga",count:1,name:"Marta Balaga"},
+        {id:"pekkaEronen",count:5,name:"Pekka Eronen"},
+        {id:"lauraHallamaa",count:1,name:"Laura Hallamaa"},
+        {id:"jussiHuhtala",count:1,name:"Jussi Huhtala"},
+        {id:"heikkiIkonen",count:2,name:"Heikki Ikonen"},
+        {id:"janneKaakko",count:1,name:"Janne Kaakko"},
+        {id:"riittaLehtimäki",count:1,name:"Riitta Lehtimäki"},
+        {id:"vpLehtonen",count:1,name:"Veli-Pekka Lehtonen"},
+        {id:"heini lehtosalo",count:1,name:"Heini Lehtosalo"},
+        {id:"jarnoLindemark",count:5,name:"Jarno Lindemark"},
+        {id:"eijaNiskanen",count:1,name:"Eija Niskanen"},
+        {id:"jussiUPellonpää",count:4,name:"Jussi U. Pellonpää"},
+        {id:"tr",count:2,name:"T R"},
+        {id:"miskaRantanen",count:1,name:"Miska Rantanen"},
+        {id:"hwRehnstöm",count:5,name:"Henri Waltter Rehnström"},
+        {id:"kariSalminen",count:2,name:"Kari Salminen"},
+        {id:"juhoTyppo",count:1,name:"Juho Typpö"},
+        {id:"päiviValotie",count:8,name:"Päivi Valotie"},
+        {id:"jouniVikman",count:1,name:"Jouni Vikman"},
+        {id:"jussiVirratvuori",count:6,name:"Jussi Virratvuori"},
+        {id:"leenaVirtanen",count:1,name:"Leena Virtanen"},
+        {id:"sannaWirratvuori",count:2,name:"Sanna Wirtavuori"},
+        {id:"tuomoYrittiaho",count:2,name:"Tuomo Yrittiaho"}
+    ]
+}
+
+
 export const SingleMovieMockData = {
     googleID:2,
     nimi:"Emma.",
@@ -132,7 +206,7 @@ export const SingleMovieMockData = {
     img:"emma.jpg",
     ensiIlta:"2020-03-06T00:00:00.000Z",
     reviews:[
-        {criticID:"janneKaakko",googleID:2,"stars":4,link:"Aamulehti 6.3.2020",publisher:"Aamulehti",name:"Janne Kaakko"},
+        {criticID:"janneKaakko",googleID:2,stars:4,link:"Aamulehti 6.3.2020",publisher:"Aamulehti",name:"Janne Kaakko"},
         {criticID:"päiviValotie",googleID:2,stars:3,link:"Turun Sanomat 6.3.2020",publisher:"Turun Sanomat",name:"Päivi Valotie"},
         {criticID:"jouniVikman",googleID:2,stars:3,link:"https://www.episodi.fi/elokuvat/emma/",publisher:"Episodi",name:"Jouni Vikman"}
     ],
@@ -259,7 +333,7 @@ export const getPresentedItemsList = (allTheItems, search ,sortingField, sorting
             let val;
 
             switch (sortingField) {
-                case "name":
+                case name:
                   val = reversed * a[sortingField].localeCompare(b[sortingField])
                   break;
                 default:
@@ -287,43 +361,43 @@ export const getVisibleItems = (itemsUpToLevel, currentPage, itemsPerPage) => {
 }
 
 export const revierListMockData = [
-    {"id":"pekkaEronen","name":"Pekka Eronen","starsAverage":3,"numbOfRevies":9},
-    {"id":"janneKaakko","name":"Janne Kaakko","starsAverage":3.3333333333333335,"numbOfRevies":6},
-    {"id":"leenaVirtanen","name":"Leena Virtanen","starsAverage":3,"numbOfRevies":4},
-    {"id":"juhoTyppo","name":"Juho Typpö","starsAverage":2.8,"numbOfRevies":5},
-    {"id":"avola","name":"Pertti Avola","starsAverage":3,"numbOfRevies":12},
-    {"id":"kristerUggedal","name":"Krister Uggeldahl","starsAverage":2.8823529411764706,"numbOfRevies":17},
-    {"id":"päiviValotie","name":"Päivi Valotie","starsAverage":2.7142857142857144,"numbOfRevies":14},
-    {"id":"jarnoLindemark","name":"Jarno Lindemark","starsAverage":3.3333333333333335,"numbOfRevies":9},
-    {"id":"timoAlho","name":"Timo Alho","starsAverage":3.3636363636363638,"numbOfRevies":11},
-    {"id":"saraEH","name":"Sara Ehnholm Hielm","starsAverage":3.6666666666666665,"numbOfRevies":6},
-    {"id":"heikkiIkonen","name":"Heikki Ikonen","starsAverage":3.2222222222222223,"numbOfRevies":9},
-    {"id":"miskaRantanen","name":"Miska Rantanen","starsAverage":3.3333333333333335,"numbOfRevies":3},
-    {"id":"hwRehnstöm","name":"Henri Waltter Rehnström","starsAverage":3,"numbOfRevies":9},
-    {"id":"jussiUPellonpää","name":"Jussi U. Pellonpää","starsAverage":3.0833333333333335,"numbOfRevies":12},
-    {"id":"tr","name":"T R","starsAverage":3.25,"numbOfRevies":4},
-    {"id":"anttiSelkokari","name":"Antti Selkokari","starsAverage":3.6666666666666665,"numbOfRevies":3},
-    {"id":"kariSalminen","name":"Kari Salminen","starsAverage":3.1333333333333333,"numbOfRevies":15},
-    {"id":"aa","name":"A A","starsAverage":2.5,"numbOfRevies":2},
-    {"id":"riittaLehtimäki","name":"Riitta Lehtimäki","starsAverage":4.8,"numbOfRevies":5},
-    {"id":"vpLehtonen","name":"Veli-Pekka Lehtonen","starsAverage":3.5,"numbOfRevies":2},
-    {"id":"jussiVirratvuori","name":"Jussi Virratvuori","starsAverage":4,"numbOfRevies":10},
-    {"id":"hannaHyväri","name":"Hanna Hyväri","starsAverage":3,"numbOfRevies":1},
-    {"id":"tuomoYrittiaho","name":"Tuomo Yrittiaho","starsAverage":2.5,"numbOfRevies":4},
-    {"id":"martinaMolisMelberg","name":"Martina Moliis-Mellberg","starsAverage":2.75,"numbOfRevies":8},
-    {"id":"lauraHallamaa","name":"Laura Hallamaa","starsAverage":2,"numbOfRevies":1},
-    {"id":"sannaWirratvuori","name":"Sanna Wirtavuori","starsAverage":4,"numbOfRevies":4},
-    {"id":"heini lehtosalo","name":"Heini Lehtosalo","starsAverage":4,"numbOfRevies":3},
-    {"id":"riikkaOksanen","name":"Riikka Oksanen","starsAverage":4.5,"numbOfRevies":1},
-    {"id":"susannaKarhapää","name":"Susanna Karhapää","starsAverage":2,"numbOfRevies":1},
-    {"id":"olli-mattiOinonen","name":"Olli-Matti Oinonen","starsAverage":5,"numbOfRevies":1},
-    {"id":"sebastianGranskog","name":"Sebastian Granskog","starsAverage":4,"numbOfRevies":1},
-    {"id":"ek","name":"E K","starsAverage":4,"numbOfRevies":1},
-    {"id":"hannuLiekso","name":"Hannu Liekso","starsAverage":1,"numbOfRevies":1},
-    {"id":"jussiHuhtala","name":"Jussi Huhtala","starsAverage":3.5,"numbOfRevies":2},
-    {"id":"jesseRaatikainen","name":"Jesse Raatikainen","starsAverage":4,"numbOfRevies":1},
-    {"id":"jouniVikman","name":"Jouni Vikman","starsAverage":3.5,"numbOfRevies":2},
-    {"id":"martaBalaga","name":"Marta Balaga","starsAverage":2,"numbOfRevies":2},
-    {"id":"mariaLättilä","name":"Maria Lättilä","starsAverage":2,"numbOfRevies":2},
-    {"id":"eijaNiskanen","name":"Eija Niskanen","starsAverage":4.125,"numbOfRevies":4}
+    {id:"pekkaEronen",name:"Pekka Eronen","starsAverage":3,"numbOfRevies":9},
+    {id:"janneKaakko",name:"Janne Kaakko","starsAverage":3.3333333333333335,"numbOfRevies":6},
+    {id:"leenaVirtanen",name:"Leena Virtanen","starsAverage":3,"numbOfRevies":4},
+    {id:"juhoTyppo",name:"Juho Typpö","starsAverage":2.8,"numbOfRevies":5},
+    {id:"avola",name:"Pertti Avola","starsAverage":3,"numbOfRevies":12},
+    {id:"kristerUggedal",name:"Krister Uggeldahl","starsAverage":2.8823529411764706,"numbOfRevies":17},
+    {id:"päiviValotie",name:"Päivi Valotie","starsAverage":2.7142857142857144,"numbOfRevies":14},
+    {id:"jarnoLindemark",name:"Jarno Lindemark","starsAverage":3.3333333333333335,"numbOfRevies":9},
+    {id:"timoAlho",name:"Timo Alho","starsAverage":3.3636363636363638,"numbOfRevies":11},
+    {id:"saraEH",name:"Sara Ehnholm Hielm","starsAverage":3.6666666666666665,"numbOfRevies":6},
+    {id:"heikkiIkonen",name:"Heikki Ikonen","starsAverage":3.2222222222222223,"numbOfRevies":9},
+    {id:"miskaRantanen",name:"Miska Rantanen","starsAverage":3.3333333333333335,"numbOfRevies":3},
+    {id:"hwRehnstöm",name:"Henri Waltter Rehnström","starsAverage":3,"numbOfRevies":9},
+    {id:"jussiUPellonpää",name:"Jussi U. Pellonpää","starsAverage":3.0833333333333335,"numbOfRevies":12},
+    {id:"tr",name:"T R","starsAverage":3.25,"numbOfRevies":4},
+    {id:"anttiSelkokari",name:"Antti Selkokari","starsAverage":3.6666666666666665,"numbOfRevies":3},
+    {id:"kariSalminen",name:"Kari Salminen","starsAverage":3.1333333333333333,"numbOfRevies":15},
+    {id:"aa",name:"A A","starsAverage":2.5,"numbOfRevies":2},
+    {id:"riittaLehtimäki",name:"Riitta Lehtimäki","starsAverage":4.8,"numbOfRevies":5},
+    {id:"vpLehtonen",name:"Veli-Pekka Lehtonen","starsAverage":3.5,"numbOfRevies":2},
+    {id:"jussiVirratvuori",name:"Jussi Virratvuori","starsAverage":4,"numbOfRevies":10},
+    {id:"hannaHyväri",name:"Hanna Hyväri","starsAverage":3,"numbOfRevies":1},
+    {id:"tuomoYrittiaho",name:"Tuomo Yrittiaho","starsAverage":2.5,"numbOfRevies":4},
+    {id:"martinaMolisMelberg",name:"Martina Moliis-Mellberg","starsAverage":2.75,"numbOfRevies":8},
+    {id:"lauraHallamaa",name:"Laura Hallamaa","starsAverage":2,"numbOfRevies":1},
+    {id:"sannaWirratvuori",name:"Sanna Wirtavuori","starsAverage":4,"numbOfRevies":4},
+    {id:"heini lehtosalo",name:"Heini Lehtosalo","starsAverage":4,"numbOfRevies":3},
+    {id:"riikkaOksanen",name:"Riikka Oksanen","starsAverage":4.5,"numbOfRevies":1},
+    {id:"susannaKarhapää",name:"Susanna Karhapää","starsAverage":2,"numbOfRevies":1},
+    {id:"olli-mattiOinonen",name:"Olli-Matti Oinonen","starsAverage":5,"numbOfRevies":1},
+    {id:"sebastianGranskog",name:"Sebastian Granskog","starsAverage":4,"numbOfRevies":1},
+    {id:"ek",name:"E K","starsAverage":4,"numbOfRevies":1},
+    {id:"hannuLiekso",name:"Hannu Liekso","starsAverage":1,"numbOfRevies":1},
+    {id:"jussiHuhtala",name:"Jussi Huhtala","starsAverage":3.5,"numbOfRevies":2},
+    {id:"jesseRaatikainen",name:"Jesse Raatikainen","starsAverage":4,"numbOfRevies":1},
+    {id:"jouniVikman",name:"Jouni Vikman","starsAverage":3.5,"numbOfRevies":2},
+    {id:"martaBalaga",name:"Marta Balaga","starsAverage":2,"numbOfRevies":2},
+    {id:"mariaLättilä",name:"Maria Lättilä","starsAverage":2,"numbOfRevies":2},
+    {id:"eijaNiskanen",name:"Eija Niskanen","starsAverage":4.125,"numbOfRevies":4}
 ]

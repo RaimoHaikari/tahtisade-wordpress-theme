@@ -13,8 +13,8 @@ import {
 } from "../../components/generalLayout/singleItem/elements"
 
 import MovieCard from "../../components/singleMovie";
-import Poster from "../../components/singleMovie/poster";
-import Reviews from "../../components/singleMovie/reviews";
+import Poster from "../../components/singleMovie/Poster";
+import Reviews from "../../components/singleMovie/Reviews";
 
 import Countdown from "../../components/Countdown"
 
@@ -27,7 +27,7 @@ const Movie = () => {
 
     const dispatch = useDispatch();
 
-    const {data, loading} = useSelector(state => state.singleMovie);
+    const {data, headers, loading, visibleData} = useSelector(state => state.singleMovie);
 
     const id = useParams().id;
 
@@ -48,6 +48,9 @@ const Movie = () => {
                 </Main>
             </InfoCardWrapper>
     */
+
+
+
     return (
         <Container>
             {
@@ -57,7 +60,10 @@ const Movie = () => {
                     ? null
                     : <InfoCardWrapper>
                         <Aside>
-                            <Poster />
+                            <Poster 
+                                src={data.img}
+                                title={data.nimi}
+                            />
                         </Aside>
                         <Main>
                             <MovieCard 
@@ -70,7 +76,11 @@ const Movie = () => {
                                 title={data.nimi}
                                 writers={data.writers}
                             />
-                            <Reviews />
+                            <Reviews
+                                headers={headers}
+                                stars={data.stars}
+                                tomatoes={visibleData}
+                            />
                         </Main>
                     </InfoCardWrapper>
            }

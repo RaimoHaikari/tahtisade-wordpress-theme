@@ -7,7 +7,7 @@ import {
     ContentWrap,
     Main,
     PaginationAndSearch
-} from "../../components/generalLayout/elements";
+} from "../../components/generalLayout/itemList/elements";
 
 import ReviewerList from "../../components/reviewerList";
 import Pagination from "../../components/movieList/Pagination/GeneralPagination";

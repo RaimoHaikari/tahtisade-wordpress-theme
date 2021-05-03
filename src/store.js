@@ -15,6 +15,7 @@ import postsReducer from "./reducers/postsReduces";
 import reviewersListReducer from "./reducers/reviewerListReducer"
 import sharedReducer from "./reducers/sharedReducer";
 import singleMovieReducer from "./reducers/singleMovieReducer";
+import singleReviewerReducer from "./reducers/singleReviewerReducer";
 import timerReducer from "./reducers/timerReducer";
 
 const reducer = combineReducers({
@@ -24,6 +25,7 @@ const reducer = combineReducers({
     genres: genreListReducer,
     posts: postsReducer,
     reviewers: reviewersListReducer,
+    singleReviewer: singleReviewerReducer,
     shared: sharedReducer,
     timer: timerReducer
 })

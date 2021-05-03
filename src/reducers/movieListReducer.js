@@ -62,7 +62,7 @@ const getHeaders = () => {
     return [
         { name: "Nimi", field: "nimi", sortable: true, searchable: true },
         { name: "Arvosteluja yht.", field: "numberOfReviews",  sortable: true, searchable: false},
-        { name: "Keskiarvo", field: "averageOfReviews",  sortable: false, searchable: false}
+        { name: "Keskiarvo", field: "averageOfReviews",  sortable: true, searchable: false}
     ];
 }
 
@@ -413,11 +413,14 @@ const displayGenreList = (state, data) => {
 const displayMovieList = (state, data) => {
 
     let loadedMovieList = data.map(d => {
+        
+        let productPage = `movies/${d.id}`;
 
         let genres = d.genre.map(g => g.genreId)
 
         return {
             ...d,
+            productPage: productPage,   // Linkki elokuvan tiedot esittävälle sivulle
             genre: genres,
             numberOfReviews: d.stars.length,
             averageOfReviews: (d.stars.length===0?0:round(average(d.stars),2))
@@ -614,7 +617,13 @@ const setSingleGenreState = (state, data) => {
     */
     moviesToShow = getVisibleMovies(moviesToShow, newCurrentPage, state.itemsPerPage)
 
-    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, state.totalPages);
+    /*
+     * Sivutukseen tarvittava tieto
+     */
+    let itemsTotal = moviesToShow.length;
+    let pagesTotal = getNumberOfPagesTotal(state, itemsTotal);
+
+    let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, pagesTotal);
 
     return {
         ...state,
