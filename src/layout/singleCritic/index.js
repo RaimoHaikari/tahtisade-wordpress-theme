@@ -9,14 +9,26 @@ import {
     Container,
     InfoCardWrapper,
     Main,
-    Aside
+    Aside,
+    PaginationAndSearch
 } from "../../components/generalLayout/singleItem/elements"
 
-import Countdown from "../../components/Countdown"
+import Reviews from "../../components/singleReviewer/reviews";
+import Colleagues from "../../components/singleReviewer/Colleaques";
+
+import Pagination from "../../components/movieList/Pagination/GeneralPagination"
+import Search from "../../components/DT/Search"
+
+import Countdown from "../../components/Countdown";
+
+import Togglable from "../../components/generalLayout/togglable"
 
 import {
-    doSomeThing
+    doSomeThing,
+    initializeReviewer
 } from "../../reducers/singleReviewerReducer";
+
+import {updateSearchSetting} from "../../reducers/sharedReducer"
 
 const SingleCritic = () => {
 
@@ -28,7 +40,7 @@ const SingleCritic = () => {
 
     useEffect(() => {
 
-        dispatch(doSomeThing(id))
+        dispatch(initializeReviewer(id))
         
     }, [])
 
@@ -39,13 +51,30 @@ const SingleCritic = () => {
            ? <Countdown />
            : data === null
                 ? null
-                : <InfoCardWrapper>
-                    <Aside>
-                        Jotain kivaa
-                    </Aside>
+                : <InfoCardWrapper>            
+                    
                     <Main>
-                        {`Kriitikon ${id} tiedot esille`}
+
+                        <PaginationAndSearch>
+                            <Pagination  store="singleReviewer" />
+                            <Search 
+                                onSearch={(val) => dispatch(updateSearchSetting({
+                                    store: 'singleReviewer',
+                                    str: val
+                                }))}
+                            />
+                        </PaginationAndSearch>
+
+                        <Reviews />
                     </Main>
+
+                    <Aside>
+                        <Togglable buttonLabel="Vertailu">
+                            <Colleagues />
+                        </Togglable>
+                    </Aside>
+
+
                 </InfoCardWrapper>
         }
         </Container>

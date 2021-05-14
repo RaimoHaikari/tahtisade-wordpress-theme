@@ -17,6 +17,7 @@ const theme = {
     txtDefault: 'navy',     // Elokuvakuvakkeiden tekstit, Taulukkolistauksen normaali otsikko
     txtActive: 'red',       // Taulukkolistauksen aktivoitu otsikko
     txtWhite: '#ffffff',
+    txtGray: '#b6b0a9ff',
     txtHover: '#fff',
     fontSize: '1em',        // Elokuvakuvakkeen H1, välilehden otsikko
     lineHeight: '2em',

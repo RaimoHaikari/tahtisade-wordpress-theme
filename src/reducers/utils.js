@@ -333,7 +333,7 @@ export const getPresentedItemsList = (allTheItems, search ,sortingField, sorting
             let val;
 
             switch (sortingField) {
-                case name:
+                case "name":
                   val = reversed * a[sortingField].localeCompare(b[sortingField])
                   break;
                 default:
@@ -358,6 +358,19 @@ export const getVisibleItems = (itemsUpToLevel, currentPage, itemsPerPage) => {
         (currentPage - 1) * itemsPerPage + itemsPerPage
     );
 
+}
+
+/*
+ * Desimaalifunktion pyöristämisessä käyettävä apufunktio
+ *
+ * Lähde:
+ * ---------------------------------------------------------------------------------------------
+ * How do you round to 1 decimal place in Javascript?
+ * https://stackoverflow.com/questions/7342957/how-do-you-round-to-1-decimal-place-in-javascript
+ */
+export const round = (value, precision) => {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
 }
 
 export const revierListMockData = [

@@ -49,6 +49,8 @@ const GeneralTable = ({store}) => {
         }
     }
 
+    //console.log(visibleData)
+
     const displayTable = () => {
 
         return (
@@ -57,6 +59,7 @@ const GeneralTable = ({store}) => {
                     <TR>
                     {
                             headers.map(header => {
+
                                 return (
                                         <TH
                                             sortingField = {(sortingField && sortingField === header.field)}
@@ -77,7 +80,8 @@ const GeneralTable = ({store}) => {
                             })
                     }
                     </TR>
-                </THEAD>
+                </THEAD> 
+
                 <TBODY>
                     {
                         visibleData.map((m, i) => {
@@ -105,7 +109,8 @@ onClick={() => rowCliked(m)}
                             )
                         })
                     }
-                </TBODY>       
+                </TBODY>    
+                
             </TABLE>   
         )
     }
@@ -124,13 +129,15 @@ onClick={() => rowCliked(m)}
 
 /*
 
-
                 <TBODY>
                     {
                         visibleData.map((m, i) => {
 
                             return (
-                                <TR key={i}>
+                                <TR 
+                                    className={m.productPage?'linkToDetails':null}
+onClick={() => rowCliked(m)}
+                                    key={i}>
                                     {
                                         headers.map((header, index) => {  
 
@@ -149,7 +156,7 @@ onClick={() => rowCliked(m)}
                             )
                         })
                     }
-                </TBODY>       
+                </TBODY>    
 */
 
 export default GeneralTable;

@@ -37,6 +37,15 @@ export const updateCurretPage = (val) => {
 
                 break;
 
+            case 'singleReviewer': 
+
+                dispatch({
+                    type: 'SINGLE_REVIEWER_SET_CURRENT_PAGE',
+                    data: {page: val.page}
+                });
+
+                break;
+
 
         }
     }
@@ -83,6 +92,9 @@ export const updateDisplayType = (val) => {
     }
 }
 
+/*
+ * 
+ */
 export const updateSearchSetting = (val) => {
 
     return dispatch => {
@@ -93,7 +105,9 @@ export const updateSearchSetting = (val) => {
 
                 dispatch({
                     type: 'GENRELIST_UPDATE_SEARCH',
-                    data: {str: val.str}
+                    data: {
+                        str: val.str
+                    }
                 });
 
                 break;
@@ -102,7 +116,9 @@ export const updateSearchSetting = (val) => {
 
                 dispatch({
                     type: 'MOVIELIST_UPDATE_SEARCH',
-                    data: {str: val.str}
+                    data: {
+                        str: val.str
+                    }
                 });
 
                 break;
@@ -112,7 +128,21 @@ export const updateSearchSetting = (val) => {
 
                 dispatch({
                     type: 'REVIEWERLIST_UPDATE_SEARCH',
-                    data: {str: val.str}
+                    data: {
+                        str: val.str
+                    }
+                });
+
+                break;
+
+            case 'singleReviewer': 
+
+                dispatch({
+                    type: 'SINGLE_REVIEWER_UPDATE_SEARCH',
+                    data: {
+                        str: val.str,
+                        target: val.target === undefined?'primary':val.target
+                    }
                 });
 
                 break;
@@ -162,6 +192,15 @@ export const updateSortingSetting = (val) => {
 
                 dispatch({
                     type: 'SINGLE_MOVIE_UPDATE_REVIEWS_SORTING',
+                    data: {field: val.field}
+                });
+
+                break;
+
+            case 'singleReviewer': 
+
+                dispatch({
+                    type: 'SINGLE_REVIEWER_UPDATE_REVIEWS_SORTING',
                     data: {field: val.field}
                 });
 

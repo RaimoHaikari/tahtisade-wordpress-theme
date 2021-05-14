@@ -12,6 +12,20 @@ export const Container = styled.div`
     background: ${props => props.theme.backgroundColor};
 `;
 
+export const PaginationAndSearch = styled.div`
+
+    padding-top: ${props => props.theme.navbar.height};
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+
+    display: flex;
+
+    & .paginationContainer {
+        margin-right: auto;
+    }
+`;
+
 export const InfoCardWrapper = styled.div`
 
     padding-top: ${props => props.theme.navbar.height};
@@ -36,7 +50,7 @@ export const Main = styled.main`
 
     padding-bottom: 10px;
 
-    flex: 2;
+    flex: 3;
     /*
     flex-grow: 1;
     flex-shrink: 1;
@@ -47,8 +61,8 @@ export const Main = styled.main`
 
 export const Aside = styled.aside`
 
-    background-color: ${props => props.theme.bgLight};
-
+    background-color:  ${props => props.theme.backgroundColor};
+    padding: 0 5px;
     flex: 1;
 
     /*
