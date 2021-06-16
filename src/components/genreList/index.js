@@ -3,6 +3,7 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
 import {
+    initializeGenres,
     loadMockData
 } from "../../reducers/genreListReducer"
 
@@ -19,7 +20,7 @@ const GenreList = () => {
     useEffect(() => {
 
         if(data === null){
-            dispatch(loadMockData())
+            dispatch(initializeGenres())
         }
 
     }, [data])

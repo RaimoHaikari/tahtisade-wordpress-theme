@@ -10,11 +10,13 @@ import {
     InfoCardWrapper,
     Main,
     Aside,
+    Graph,
     PaginationAndSearch
 } from "../../components/generalLayout/singleItem/elements"
 
 import Reviews from "../../components/singleReviewer/reviews";
 import Colleagues from "../../components/singleReviewer/Colleaques";
+import ReusableD3Donut from "../../components/singleReviewer/aReusableDonut"
 
 import Pagination from "../../components/movieList/Pagination/GeneralPagination"
 import Search from "../../components/DT/Search"
@@ -51,8 +53,17 @@ const SingleCritic = () => {
            ? <Countdown />
            : data === null
                 ? null
-                : <InfoCardWrapper>            
-                    
+                : <InfoCardWrapper>   
+
+                    <Aside>
+                        <Togglable 
+                            buttonLabel="Vertailu"
+                            openAtStart={false}
+                        >
+                            <Colleagues />
+                        </Togglable>
+                    </Aside>    
+
                     <Main>
 
                         <PaginationAndSearch>
@@ -68,12 +79,14 @@ const SingleCritic = () => {
                         <Reviews />
                     </Main>
 
-                    <Aside>
-                        <Togglable buttonLabel="Vertailu">
-                            <Colleagues />
+                    <Graph>
+                        <Togglable 
+                            buttonLabel="Vertailu"
+                            openAtStart={true}
+                        >
+                            <ReusableD3Donut /> 
                         </Togglable>
-                    </Aside>
-
+                    </Graph>
 
                 </InfoCardWrapper>
         }

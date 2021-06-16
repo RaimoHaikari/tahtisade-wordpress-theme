@@ -5,6 +5,21 @@ import {
     SiLastpass
 } from "react-icons/si"
 
+import {
+    BsFillStarFill,
+    BsStarHalf
+} from "react-icons/bs"
+
+/*
+ * Keskiarvon laskeva funktio
+ *
+ * Lähde:
+ * 
+ * How to compute the sum and average of elements in an array?
+ * - https://stackoverflow.com/questions/10359907/how-to-compute-the-sum-and-average-of-elements-in-an-array
+ */
+export const average = arr => arr.reduce( (p, c ) => p + c, 0 ) / arr.length;
+
 /*
  * Lasketaan sivutuslinkeissä esitettävien sivut.
  * - linkkien muodostamisen ensimmäinen vaihe
@@ -90,7 +105,7 @@ export const genreListMockData = [
 /*
 ["Action","Adventure","Animation","Biography","Comedy","Crime","Documentary","Drama","Family","History","Horror","Mystery","Romance","Sci-Fi","Sport","Thriller","War"]
 */
-export const genreNamesMockData = [
+export const genreNamesMockDataPPP = [
     {name: "Action", id: 5, display: false},
     {name: "Adventure", id: 1, display: false},
     {name: "Animation", id: 12, display: false},
@@ -98,7 +113,7 @@ export const genreNamesMockData = [
     {name: "Comedy", id: 2, display: true},
 ]
 
-export const genreNamesMockDataPPP = [
+export const genreNamesMockData = [
     {name: "Action", id: 5, display: true},
     {name: "Adventure", id: 1, display: true},
     {name: "Animation", id: 12, display: true},
@@ -378,7 +393,7 @@ export const revierListMockData = [
     {id:"janneKaakko",name:"Janne Kaakko","starsAverage":3.3333333333333335,"numbOfRevies":6},
     {id:"leenaVirtanen",name:"Leena Virtanen","starsAverage":3,"numbOfRevies":4},
     {id:"juhoTyppo",name:"Juho Typpö","starsAverage":2.8,"numbOfRevies":5},
-    {id:"avola",name:"Pertti Avola","starsAverage":3,"numbOfRevies":12},
+    {id:"avola",name:"Pertti Avola","starsAverage":3,"numbOfRevies":13},
     {id:"kristerUggedal",name:"Krister Uggeldahl","starsAverage":2.8823529411764706,"numbOfRevies":17},
     {id:"päiviValotie",name:"Päivi Valotie","starsAverage":2.7142857142857144,"numbOfRevies":14},
     {id:"jarnoLindemark",name:"Jarno Lindemark","starsAverage":3.3333333333333335,"numbOfRevies":9},
@@ -414,3 +429,43 @@ export const revierListMockData = [
     {id:"mariaLättilä",name:"Maria Lättilä","starsAverage":2,"numbOfRevies":2},
     {id:"eijaNiskanen",name:"Eija Niskanen","starsAverage":4.125,"numbOfRevies":4}
 ]
+
+/*
+ * 
+ * Kuinka float -tyyppinen keskiarvo koodatan tähdiksi.
+ * 
+ * Muunnos on kaksivaiheinen.
+ * 1) koodataan apusarakkeeseen tähtimuotoinen esitys
+ * 2) Koska esillä olevan aineiston lajittelu pitää hoitaa alkuperäisen numeroarvon avulla,
+ *    vasta lopussa tähdet kopioidaan selaimelle lähtettävään kopioon alkuperäisen 
+ *    luvun tilalle.
+ * 
+ */
+export const convertAverageToStars = (avg) => {
+
+    let val = [];
+
+    for(let i = 0; i < Math.floor(avg); i ++)
+        val.push(<BsFillStarFill />);
+
+    if(avg % 1 >= 0.5)
+        val.push(<BsStarHalf />);
+
+    return val;
+}
+
+/*
+ * Selaimelle lähetettävän setin viimeistely, jossa numero korvataan tähdillä.
+ * (Prosessin vaihe2)
+ */
+export const displayStars = (list, key, value) => {
+
+    return list.map(item => {
+        return {
+            ...item,
+            [key]: item[value]
+        }
+    })
+
+}
+

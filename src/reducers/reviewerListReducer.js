@@ -1,14 +1,19 @@
 import React from 'react';
+import reviewerService from '../services/reviewers'
+
 
 import TablePresentation from "../components/movieList/TablePresentation/generalTable"
 
 import {
+    convertAverageToStars,
+    displayStars,
     getNumberOfPagesTotal,
     getPaginationLinks,
     getPresentedItemsList,
     getVisibleItems,
     revierListMockData
 } from "./utils";
+import { max } from 'd3-array';
 
 
 const DISPLAYTYPE = [
@@ -39,8 +44,9 @@ const initialState = {
     data: null,
     displayTypes: DISPLAYTYPE,
     headers: [], // Huom! Pitää olla jotta tieto voidaan esittää taulukossa
-    itemsPerPage: 10,
+    itemsPerPage: 20,
     loading: false,
+    numberOfReviews: {min:1, value:10, max: null},
     maxNumberOfPaginationLinks: 5,
     paginationLinks: [],   
     search: '',
@@ -54,28 +60,54 @@ const initialState = {
  */
 const displayReviewerList = (state, data) => {
 
-    let loadedReviewerList  = revierListMockData;
+    let loadedReviewerList  = data;
+    let maxNumbOfReviews = -1;
+
 
     /*
+     * Palvelimelta luetun datan esikäsittely
      *
+     * lisätään tietueisiin 
+     * - linkki kriitikon faktasivulle
+     * - ikoneilla esitetty muoto arvosanojen keskiarvosta
+     * 
+     * Selvitetään annettujen arvostelujen enimmäismäärä
      */
     loadedReviewerList = loadedReviewerList.map(r => {
 
         let productPage = `reviewers/${r.id}`;
+        let visualizedStars = convertAverageToStars(r['starsAverage'])
+
+        if(parseInt(r.numbOfRevies) > maxNumbOfReviews)
+            maxNumbOfReviews = parseInt(r.numbOfRevies)
 
         return {
             ...r,
             productPage: productPage,   // Linkki kriitikon tiedot esittävälle sivulle
+            visualizedStars: visualizedStars
         }
 
     })
 
-    let reviewersToShow = getPresentedItemsList(
+    /*
+     * Päivitetään tarvittavien arvioiden lukumäärän asetusta säätelevä objekti
+     */
+    let newNumberOfReviews = {
+        ...state.numberOfReviews,
+        max: maxNumbOfReviews
+    }
+
+    /*
+     *
+     */
+    let reviewersToShow = getFilteredItemsList(
         loadedReviewerList,
         state.search, 
         state.sortingField, 
-        state.sortingOrder
+        state.sortingOrder, 
+        state.numberOfReviews.value
     )
+
 
     /*
      * Sivutukseen tarvittava tieto
@@ -83,10 +115,17 @@ const displayReviewerList = (state, data) => {
     let itemsTotal = reviewersToShow.length;
     let pagesTotal = getNumberOfPagesTotal(state, itemsTotal);
 
-   /*
-     * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
-     */
-   reviewersToShow = getVisibleItems(reviewersToShow, state.currentPage, state.itemsPerPage);
+    /*
+    * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon &
+    * vaihdetaan tähdet numeroiden tilalle merkkaamaan keskiarvoa
+    */
+    reviewersToShow = prune(
+        reviewersToShow, 
+        state.currentPage, 
+        state.itemsPerPage,
+        'starsAverage', 
+        'visualizedStars'
+    )
 
    let paginationLinks = getPaginationLinks(state.currentPage, state.maxNumberOfPaginationLinks, pagesTotal);
 
@@ -95,6 +134,7 @@ const displayReviewerList = (state, data) => {
         data: loadedReviewerList,
         headers: getHeaders(),
         loading: false,
+        numberOfReviews: newNumberOfReviews,
         paginationLinks: paginationLinks,
         totalItems: itemsTotal,
         totalPages: pagesTotal,
@@ -102,19 +142,51 @@ const displayReviewerList = (state, data) => {
     }
 }
 
+/*
+ * Lisätään Aineiston lajittelusta ja mahdollisesta hakutermillä tapahtuvasta rajauksesta huolehtivaan
+ * funktio-kutsuun tarvittavien arvostelujen määrää koskeva rajaus 
+ */
+const getFilteredItemsList = (items, search, sortingField, sortingOrder, numberOfReviewsNeeded) => {
+
+    return getPresentedItemsList(
+        items,
+        search, 
+        sortingField, 
+        sortingOrder
+    )
+    .filter(r => r.numbOfRevies >= numberOfReviewsNeeded)   
+
+}
+
+/* 
+ * Suodatetaan aineistosta selaimelle lähetettävä osuus
+ */
+const prune = (items, currentPage, itemsPerPage, key, value) => {
+
+    let filtered = getVisibleItems(items, currentPage, itemsPerPage);
+
+   /*
+    * Jäljellä enään selaimelle lähtettävä osuus. Koska lajittelu on jo suoritettu, voidaan
+    * keskiarvon sisältävään sarakke "täyttää" tähdillä
+    */
+   filtered = displayStars(filtered, key, value)
+   
+   return filtered
+
+}
 
 const setCurretPage = (state, data) => {
-
 
     let newCurrentPage = data.page;
 
 
     // - päivitetään kävijälle näytettävä arvostelijalistaus
-    let reviewersToShow = getPresentedItemsList(
+    let reviewersToShow = getFilteredItemsList(
         state.data,
         state.search, 
         state.sortingField, 
-        state.sortingOrder
+        state.sortingOrder, 
+        state.numberOfReviews.value
     )
     
 
@@ -124,12 +196,17 @@ const setCurretPage = (state, data) => {
     let itemsTotal = reviewersToShow.length;
     let pagesTotal = getNumberOfPagesTotal(state, itemsTotal);
     
-
     /*
-     * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
+     * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon &
+     * vaihdetaan tähdet numeroiden tilalle merkkaamaan keskiarvoa
      */
-    
-    reviewersToShow = getVisibleItems(reviewersToShow, newCurrentPage, state.itemsPerPage)
+    reviewersToShow = prune(
+        reviewersToShow, 
+        newCurrentPage, 
+        state.itemsPerPage,
+        'starsAverage', 
+        'visualizedStars'
+    )
 
     let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, pagesTotal);
 
@@ -159,6 +236,68 @@ const setDisplayType = (state, data) => {
 
 }
 
+/* 
+ * Asetetaa uusi arvo sille kuinka monta arvostelua pitää vähintään olla, jotta arvostelijan
+ * nimi esitetään listalla
+ * 
+ * @todo: T Ä N N E   J Ä Ä T I I N . . .
+ */
+const setMinNumberOfReviews = (state, data) => {
+
+    let newValue = data.value
+
+
+    /*
+     * Päivitetään tarvittavien arvioiden lukumäärän asetusta säätelevä objekti
+     */
+    let newNumberOfReviews = {
+        ...state.numberOfReviews,
+        value: newValue
+    }
+
+    /*
+     *
+     */
+    let reviewersToShow = getFilteredItemsList(
+        state.data,
+        state.search, 
+        state.sortingField, 
+        state.sortingOrder, 
+        newValue
+    )
+
+
+    /*
+     * Sivutukseen tarvittava tieto
+     */
+    let itemsTotal = reviewersToShow.length;
+    let pagesTotal = getNumberOfPagesTotal(state, itemsTotal);
+
+    /*
+    * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon &
+    * vaihdetaan tähdet numeroiden tilalle merkkaamaan keskiarvoa
+    */
+    reviewersToShow = prune(
+        reviewersToShow, 
+        state.currentPage, 
+        state.itemsPerPage,
+        'starsAverage', 
+        'visualizedStars'
+    )
+
+   let paginationLinks = getPaginationLinks(state.currentPage, state.maxNumberOfPaginationLinks, pagesTotal);
+
+    return {
+        ...state,
+        numberOfReviews: newNumberOfReviews,
+        paginationLinks: paginationLinks,
+        totalItems: itemsTotal,
+        totalPages: pagesTotal,
+        visibleData: reviewersToShow
+    }
+
+}
+
 /*
  * Hakutermin muutos
  */
@@ -167,12 +306,13 @@ const setSearchSettings = (state, data) => {
     let searchStr = data.str;
 
     // - päivitetään kävijälle näytettävä elokuvalistaus
-    let reviewersToShow = getPresentedItemsList(
+    let reviewersToShow = getFilteredItemsList(
         state.data,
         searchStr, 
         state.sortingField, 
-        state.sortingOrder
-    );
+        state.sortingOrder, 
+        state.numberOfReviews.value
+    )
 
     /*
      * Sivutukseen tarvittava tieto
@@ -180,11 +320,19 @@ const setSearchSettings = (state, data) => {
     let itemsTotal = reviewersToShow.length;
     let pagesTotal = getNumberOfPagesTotal(state, itemsTotal);
 
-    
     let newCurrentPage = 1;
 
-    // Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
-    reviewersToShow = getVisibleItems(reviewersToShow, newCurrentPage, state.itemsPerPage);
+    /*
+     * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon &
+     * vaihdetaan tähdet numeroiden tilalle merkkaamaan keskiarvoa
+     */
+    reviewersToShow = prune(
+        reviewersToShow, 
+        newCurrentPage, 
+        state.itemsPerPage,
+        'starsAverage', 
+        'visualizedStars'
+    )
 
     let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, pagesTotal);
 
@@ -209,12 +357,16 @@ const setSortingSettings = (state, data)  => {
     let newField = data.field;
     let newOrder = ((newField === state.sortingField) && (state.sortingOrder === "asc")) ? "desc" : "asc";
 
-    let reviewersToShow = getPresentedItemsList(
+    /*
+     *
+     */
+    let reviewersToShow = getFilteredItemsList(
         state.data,
         state.search, 
         newField, 
-        newOrder
-    );
+        newOrder, 
+        state.numberOfReviews.value
+    )
 
     /*
      * Sivutukseen tarvittava tieto
@@ -226,8 +378,18 @@ const setSortingSettings = (state, data)  => {
     let newCurrentPage = 1;
 
     // Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon
-    
-    reviewersToShow = getVisibleItems(reviewersToShow, newCurrentPage, state.itemsPerPage);
+    //reviewersToShow = getVisibleItems(reviewersToShow, newCurrentPage, state.itemsPerPage);
+    /*
+     * Suodatetaan sivulla näytettävät elokuvat, kun sivutus otetaan huomioon &
+     * vaihdetaan tähdet numeroiden tilalle merkkaamaan keskiarvoa
+     */
+    reviewersToShow = prune(
+        reviewersToShow, 
+        newCurrentPage, 
+        state.itemsPerPage,
+        'starsAverage', 
+        'visualizedStars'
+    )    
 
     let paginationLinks = getPaginationLinks(newCurrentPage, state.maxNumberOfPaginationLinks, pagesTotal);
 
@@ -256,10 +418,48 @@ export const loadMockData = () => {
 
             dispatch({
                 type: 'REVIEWERLIST_INITIALIZED',
-                data: {}
+                data: revierListMockData
             })
 
         }, 2000)
+
+    }
+
+}
+
+export const loadData = () => {
+
+    return async dispatch => {
+
+        dispatch({
+            type: 'REVIEWERLIST_LOADING_START'
+        })
+
+        const reviewers = await reviewerService.getGeneralListing();
+
+        dispatch({
+            type: 'REVIEWERLIST_INITIALIZED',
+            data: reviewers
+        })
+
+    }
+
+}
+
+/*
+ * Päivitetään arvoa kuinka monta arvostelua pitää vähintään olla,
+ * jotta arvostelija huomioidaan nimilistassa
+ */
+export const updateMinNumbOfReviews = (val) => {
+
+    return dispatch => {
+
+        dispatch({
+            type: 'REVIEWERLIST_UPDATE_NUMB_OF_REVIEWS',
+            data: {
+                value: val
+            }
+        })
 
     }
 
@@ -287,6 +487,10 @@ const reviewersListReducer = (state = initialState, action) => {
 
             return setDisplayType(state, action.data);
 
+
+        case 'REVIEWERLIST_UPDATE_NUMB_OF_REVIEWS':
+
+            return setMinNumberOfReviews(state, action.data);
 
         case 'REVIEWERLIST_UPDATE_SEARCH':
 

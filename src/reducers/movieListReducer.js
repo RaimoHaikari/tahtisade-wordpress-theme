@@ -1,5 +1,6 @@
 import React from 'react';
 import moviesService from '../services/movies';
+import genresService from '../services/genres';
 
 import Card from "../components/movieList/Card";
 import TablePresentation from "../components/movieList/TablePresentation/generalTable"
@@ -122,13 +123,6 @@ const getNumberOfPagesTotal = (state, itemsTotal) => {
  */ 
 const getActiveMovies = (allTheMovies, genreNames) => {
 
-    /*
-    console.log("...... getActiveMovies......")
-    console.log(allTheMovies)
-    console.log(genreNames)    
-    console.log("............................")
-    */
-
     const activeGenres = genreNames
         .filter(g => g.display === true)
         .map(g => g.id)
@@ -153,9 +147,9 @@ const getActiveMovies = (allTheMovies, genreNames) => {
  * 
  * Huom! Tässä vaiheessa ei vielä suoriteta sivutusta
  */
-const getPresentedMovieList = (allTheMovies, currentPage, itemsPerPage, search ,sortingField, sortingOrder, genreNames) => {
+const  getPresentedMovieList = (allTheMovies, currentPage, itemsPerPage, search ,sortingField, sortingOrder, genreNames) => {
 
-    let computedMovies = allTheMovies;
+    let computedMovies = allTheMovies===null?[]:allTheMovies;
 
     /*
      * Rajatus genremäärityksen perusteella
@@ -366,7 +360,28 @@ const setSortingSettings = (state, data)  => {
  */
 const displayGenreList = (state, data) => {
 
-    let newGenreNames = data
+    /*
+name: "Action", id: 5, display: true
+
+
+    */
+    let newGenreNames = data.map(d => {
+
+        return {
+            name: d.genre,
+            id: parseInt(d.id),
+            display: true
+        }
+
+    })
+
+    console.log("--------------------------")
+    console.log(newGenreNames)
+    console.log(genreNamesMockData)
+    console.log("........................")
+
+    //newGenreNames = genreNamesMockData
+
 
     let moviesToShow = getPresentedMovieList(
         state.allTheMovies,
@@ -691,16 +706,6 @@ const getVisibleMovies = (moviesUpToLevel, currentPage, itemsPerPage) => {
 
 /* 
  * A C T I O N S
-
-
-        const movies = await moviesService.getGeneralListing();
-
-        dispatch({
-            type: 'INITIALIZED',
-            data: movies
-        })
-
-
  */ 
 export const doSomeThing = () => {
 
@@ -725,6 +730,29 @@ export const doSomeThing = () => {
     }
 
 }
+
+/*
+ *
+ * tähän jäätiin. jostain syystä tässä pitää venata, jotta elokuvalistaus on varmasti jo ladattu...
+ */
+export const loadGenreList = () => {
+
+    return async dispatch => {
+
+        dispatch({
+            type: 'MOVIELIST_GENRENAMES_LOADING_START',
+            data: {}
+        })
+
+        const gNames = await genresService.getGeneralListing();
+
+        dispatch({
+            type: 'MOVIELIST_GENRENAMES_LOADING_END',
+            data: gNames
+        })
+    }
+}
+
 
 /*
  * - kytke loading päälle

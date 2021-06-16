@@ -11,7 +11,7 @@ export const BUTTON = styled.button`
     display: block;
     width: 100%;
     border: 1px solid white;
-    background-color: ${props => props.theme.bgPrimary};
+    background-color: ${props => props.theme.bgPrimary}; 
     padding: 0.2rem;
     font-size: 1.0rem;
     cursor: pointer;

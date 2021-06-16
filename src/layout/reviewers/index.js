@@ -13,6 +13,8 @@ import ReviewerList from "../../components/reviewerList";
 import Pagination from "../../components/movieList/Pagination/GeneralPagination";
 import Search from "../../components/DT/Search";
 
+import Toolbar from '../../components/reviewerList/toolbar';
+
 import {updateSearchSetting} from "../../reducers/sharedReducer"
 
 const Reviewers = () => {
@@ -47,7 +49,7 @@ const Reviewers = () => {
                     <ReviewerList />
                 </Main>
                 <Aside>
-                    Tähän työkalut
+                    <Toolbar />
                 </Aside>
             </ContentWrap>
 

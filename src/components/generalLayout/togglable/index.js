@@ -9,7 +9,8 @@ import {
 } from "./elements"
 
 const Togglable = (props) => {
-  const [visible, setVisible] = useState(false)
+
+  const [visible, setVisible] = useState(props.openAtStart?true:false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }

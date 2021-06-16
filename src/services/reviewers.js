@@ -2,6 +2,18 @@ import axios from 'axios'
 
 const baseUrl = 'http://localhost/tahtisade/wp-json';
 
+/* 
+ * Haetaan arvostelijat listaavalla sivulla esitettävät yhteenvetotiedot
+ * 
+ * http://localhost/tahtisade/wp-json/rmt/v1/reviewers?include=general
+ */
+const getGeneralListing = async () => {
+
+    const response = await axios.get(`${baseUrl}/rmt/v1/reviewers?include=general`);
+    return response.data
+
+}
+
 
 /* 
  * Haetaan yksittäisen arvostelijan perustiedot palvelimelta
@@ -29,5 +41,6 @@ const getColleagueData = async (id, compId) => {
 
 export default {
     getColleagueData,
+    getGeneralListing,
     getReviewerData
 }

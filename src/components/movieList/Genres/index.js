@@ -8,6 +8,7 @@ import Togglable from "../../generalLayout/togglable"
 
 import {
     doSomeThing,
+    loadGenreList,
     toggleGenres,
     updateSingleGenreVisibility
 } from "../../../reducers/movieListReducer";
@@ -40,8 +41,10 @@ const Genres = ({}) => {
 
     useEffect(() => {
 
-        if(genreNames === null)
-            dispatch(doSomeThing())
+        if(genreNames === null){
+dispatch(loadGenreList())
+            //dispatch(doSomeThing())
+        }
 
     }, [genreNames])
 

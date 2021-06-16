@@ -2,13 +2,15 @@ import React from 'react';
 
 import TablePresentation from "../components/movieList/TablePresentation/generalTable"
 
+import genresService from '../services/genres';
+
 import {
     genreListMockData,
     getNumberOfPagesTotal,
     getPaginationLinks,
-    getVisibleItems
+    getVisibleItems,
+    round
 } from "./utils";
-
 
 const DISPLAYTYPE = [
 
@@ -39,7 +41,7 @@ const initialState = {
     data: null,
     displayTypes: DISPLAYTYPE,
     headers: [], // Huom! Pitää olla jotta tieto voidaan esittää taulukossa
-    itemsPerPage: 10,
+    itemsPerPage: 25,
     loading: false,
     maxNumberOfPaginationLinks: 5,
     paginationLinks: [],   
@@ -115,7 +117,24 @@ const getPresentedGenreList = (allTheGenres,  search ,sortingField, sortingOrder
 
 const displayGenreList = (state, data) => {
 
-    let loadedGenreList  = genreListMockData;
+    let loadedGenreList  = data.genres;
+
+    /*
+     * averageOfReviews: (d.stars.length===0?0:round(average(d.stars),2))
+     */
+    loadedGenreList = loadedGenreList.map(g => {
+
+        let productPage = `genres/${g.id}`;
+
+        // starsAverage: (d.stars.length===0?0:round(average(d.stars),2))
+
+        return {
+            ...g,
+            starsAverage: round(g.starsAverage,2),
+            productPage: productPage,   // Linkki genren tiedot esittävälle sivulle
+        }
+
+    })
 
     let genresToShow = getPresentedGenreList(
         loadedGenreList,
@@ -316,7 +335,9 @@ export const loadMockData = () => {
 
             dispatch({
                 type: 'GENRELIST_INITIALIZED',
-                data: {}
+                data: {
+                    genres: genreListMockData
+                }
             })
 
         }, 2000)
@@ -324,6 +345,31 @@ export const loadMockData = () => {
     }
 
 }
+
+
+/*
+ * Haetaan lajityyppien saamien arvostelujen yhteenvetotiedot palvelimelta
+ */
+export const initializeGenres = (val) => {
+
+    return async dispatch => {
+
+        dispatch({
+            type: 'GENRELIST_LOADING_START',
+            data: {}
+        })
+        
+        const genres = await genresService.getGeneralListing()
+
+        dispatch({
+            type: 'GENRELIST_INITIALIZED',
+            data: {
+                genres: genres
+            }
+        })
+    }
+}
+
 
 const genreListReducer = (state = initialState, action) => {
 

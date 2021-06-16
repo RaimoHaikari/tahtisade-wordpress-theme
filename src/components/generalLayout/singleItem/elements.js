@@ -51,11 +51,6 @@ export const Main = styled.main`
     padding-bottom: 10px;
 
     flex: 3;
-    /*
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 600px;
-    */
 
 `;
 
@@ -65,10 +60,9 @@ export const Aside = styled.aside`
     padding: 0 5px;
     flex: 1;
 
-    /*
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 400px;
-    */
+`;
 
+export const Graph = styled.aside`
+    flex: 1;
+    padding: 0 5px;
 `;

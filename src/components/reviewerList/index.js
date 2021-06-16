@@ -6,7 +6,8 @@ import Countdown from "../Countdown"
 import GeneralTabs from "../movieList/Tabs/generalTabs";
 
 import {
-    loadMockData
+    loadMockData,
+    loadData
 } from "../../reducers/reviewerListReducer";
 
 const ReviewerList = () => {
@@ -25,7 +26,7 @@ const ReviewerList = () => {
     useEffect(() => {
 
         if(visibleData === null){
-            dispatch(loadMockData())
+            dispatch(loadData())
         }
 
     }, [visibleData])
