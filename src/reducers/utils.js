@@ -102,17 +102,6 @@ export const genreListMockData = [
     { genre: "Mystery", numberOfMovies: 2, numberOfReviews: 5, starsAverage: 2.8 }
 ];
 
-/*
-["Action","Adventure","Animation","Biography","Comedy","Crime","Documentary","Drama","Family","History","Horror","Mystery","Romance","Sci-Fi","Sport","Thriller","War"]
-*/
-export const genreNamesMockDataPPP = [
-    {name: "Action", id: 5, display: false},
-    {name: "Adventure", id: 1, display: false},
-    {name: "Animation", id: 12, display: false},
-    {name: "Biography", id: 18, display: false},
-    {name: "Comedy", id: 2, display: true},
-]
-
 export const genreNamesMockData = [
     {name: "Action", id: 5, display: true},
     {name: "Adventure", id: 1, display: true},
@@ -241,6 +230,42 @@ export const SingleMovieMockData = {
         {googleID:2,genre:"Comedy"},{googleID:2,genre:"Drama"}
     ]};
 
+/*
+
+*/
+export const SunburstMockData = {
+    name: "TOPICS", 
+    children: [
+        {
+            name: "Topic A",
+            children: [
+                {name: "Sub A1", size: 5, text: "A story", sentiment: 0.8, source: "dictionary"},
+                {
+                    name: "Suppari", 
+                    children:[
+                        {name: "Kala", size: 4, text: "Kala ui", sentiment: 0.5, source: "newspaper"},
+                        {name: "Mato", size: 1, text: "Mato kiemurtelee", sentiment: 0.2, source: "friend"},
+                        {name: "Onki", size: 6, text: "Vapa taipuu", sentiment: 0.8, source: "email"}                       
+                    ]
+                }
+            ]
+        }, 
+        {
+            name: "Topic B",
+            children: [
+                {name: "Sub B1", size: 5, text: "A vignette", sentiment: 0.5, source: "newspaper"},
+                {name: "Sub B2", size: 3, text: "A tall-tale", sentiment: 0.2, source: "friend"},
+                {name: "Sub B3", size: 4, text: "A joke", sentiment: 0.8, source: "email"}
+            ]
+        }, 
+        {
+            name: "Topic C",
+            children: [
+                {name: "Sub A1", size: 4, text: "A narrative", sentiment: 0.2, source: "newspaper"},
+                {name: "Sub A2", size: 4, text: "A chronology", sentiment: 0.3, source: "email"}
+            ]
+    }]
+}
 /*
  * Montako sivua tarvitaan, että kaikki objektit saadaa esitettyä, kun yhdelle sivulle 
  * mahtuu korkeintaan [itemsPerPage] objektia

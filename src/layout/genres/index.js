@@ -10,6 +10,8 @@ import {
 } from "../../components/generalLayout/itemList/elements"
 
 import GenreList from "../../components/genreList";
+import Sunburst from '../../components/genreList/Sunburst';
+
 import Pagination from "../../components/movieList/Pagination/GeneralPagination";
 import Search from "../../components/DT/Search";
 
@@ -38,7 +40,7 @@ const Genres = () => {
             </PaginationAndSearch>
             <ContentWrap>
                 <Main>
-                    <GenreList />
+                    <Sunburst />
                 </Main>
                 <Aside>
                     Tähän työkalut

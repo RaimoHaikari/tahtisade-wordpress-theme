@@ -9,7 +9,8 @@ import {
     getNumberOfPagesTotal,
     getPaginationLinks,
     getVisibleItems,
-    round
+    round,
+    SunburstMockData
 } from "./utils";
 
 const DISPLAYTYPE = [
@@ -46,6 +47,12 @@ const initialState = {
     maxNumberOfPaginationLinks: 5,
     paginationLinks: [],   
     search: '',
+    sunburst: {
+        data: null,
+        loading: false,
+        width: 500,
+        height: 500
+    },
     sortingField: '',
     sortingOrder: '',
     visibleData: null,
@@ -165,6 +172,272 @@ const displayGenreList = (state, data) => {
         totalItems: itemsTotal,
         totalPages: pagesTotal,
         visibleData: genresToShow
+    }
+
+}
+
+/*
+ * 
+ */
+const flattenGenres = (arr, names) => {
+
+    let a = []
+
+    arr.forEach(element => {
+
+        let movie = element.movieId
+        //let genre = element.genreId
+        let name = element.name
+
+        let b = a.findIndex(x => x.id === movie)
+
+        if (b !== -1) {
+            let nArr = a[b].genres.concat(name)
+
+            a[b] = {
+                ...a[b],
+                genres: nArr
+            }
+            
+        } else {
+
+            a.push(
+                {
+                    id: movie,
+                    genres: [name]
+                }
+            )
+
+        }
+
+
+    });
+
+    return a;
+}
+
+const permutator = (inputArr) => {
+
+    let result = [];
+  
+    const permute = (arr, m = []) => {
+      if (arr.length === 0) {
+        result.push(m)
+      } else {
+        for (let i = 0; i < arr.length; i++) {
+          let curr = arr.slice();
+          let next = curr.splice(i, 1);
+          permute(curr.slice(), m.concat(next))
+       }
+     }
+   }
+  
+   permute(inputArr)
+  
+   return result;
+}
+
+const addPermutations = (arr) => {
+
+    let a = arr.map(m => {
+        let permutations = permutator(m.genres);
+
+        return {
+            ...m,
+            permutations: permutations
+        }
+    })
+
+    return a
+}
+
+const compare = ( a, b ) => {
+
+    if ( a.permutation < b.permutation ){
+        return -1;
+    }
+    if ( a.permutation > b.permutation ){
+        return 1;
+    }
+    return 0;
+}
+
+const extractDoubles = (arr) => {
+
+    let unos = []
+    let doubles = [];
+    let triples = [];
+
+    arr.forEach(elem => {
+
+        if(elem.genres.length == 1){
+
+            unos.push({
+                parent: `lumiere`,
+                permutation: `${elem.genres[0]}`,
+                name: elem.genres[0]
+            })
+        }
+
+        if(elem.genres.length == 2){
+
+            elem.permutations.forEach(p => {
+
+                doubles.push({
+                    parent: `${p[0]}`,
+                    permutation: `${p[0]}-${p[1]}`,
+                    name: `${p[1]}`
+                })
+
+            })
+
+        }
+
+        if(elem.genres.length == 3){
+
+            elem.permutations.forEach(p => {
+
+                triples.push({
+                    parent: `${p[0]}-${p[1]}`,
+                    permutation: `${p[0]}-${p[1]}-${p[2]}`,
+                    name: `${p[2]}`
+                })
+
+            })
+
+        }
+    })
+
+    return {
+        unos: unos,
+        doubles: doubles.sort(compare),
+        triples: triples.sort(compare)
+    }
+
+}
+
+/*
+ * 
+ */
+const countOccurances = (arr) => {
+
+    let a = []
+
+    arr.forEach(element => {
+
+        let b = a.findIndex(x => x.permutation === element.permutation)
+
+
+        if (b !== -1) {
+            
+            let newSize = a[b].size + 1
+
+            a[b] = {
+                ...element,
+                size: newSize
+            }
+            
+        } else {
+
+            a.push(
+                {
+                    ...element,
+                    size: 1
+                }
+            )
+
+        }
+
+    });
+
+    return a;
+
+}
+
+/*
+ * {parent: "lumiere", permutation: "8", size: 12}
+ * {parent: "1", permutation: "1-8", size: 1}
+ * 
+ * let b = a.findIndex(x => x.permutation === element.permutation)
+ */
+const combineArray = (parent, child) => {
+
+    child.forEach(element => {
+
+        let b = parent.findIndex(x => x.permutation === element.parent)
+
+        if (b !== -1) {
+            let nArr;
+
+            if(parent[b].children)
+                nArr = parent[b].children.concat(element)
+            else
+                nArr = [element]
+
+            let updatedObject = {
+                ...parent[b],
+                children: nArr
+            }
+
+            parent[b] = updatedObject
+            
+        } else {
+
+            let x = element.parent.split("-")
+
+            parent.push(
+                {
+                    parent: x.length > 1 ? x[0] : 'lumiere',
+                    permutation: element.parent,
+                    children: [element]
+                }
+            )
+
+        }
+    });
+
+}
+
+
+const displaySunburst = (state, data) => {
+
+    console.log("............ sb ..............")
+    console.log(data.sbData.instances)
+    //console.log(data.sbData.names)
+
+    let genreNames = data.sbData.names
+
+    let flattened = flattenGenres(data.sbData.instances)
+    let permutated = addPermutations(flattened)
+
+    let {unos, doubles, triples} = extractDoubles(permutated)
+
+    let unosTimes = countOccurances(unos)
+    let doubleTimes = countOccurances(doubles)
+    let tripleTimes = countOccurances(triples)
+    
+
+    combineArray(doubleTimes, tripleTimes)
+    combineArray(unosTimes, doubleTimes)
+
+    let fooBar = {
+        name: "Genres", 
+        children: unosTimes      
+    }
+
+    console.log(fooBar)
+    console.log(SunburstMockData)
+
+
+    let sunburstData = SunburstMockData
+
+    return {
+        ...state,
+        sunburst: {
+            ...state.sunburst,
+            data: fooBar,
+            loading: false
+        },                
     }
 
 }
@@ -323,28 +596,52 @@ const setSortingSettings = (state, data)  => {
 /* 
  * A C T I O N S
  */ 
-export const loadMockData = () => {
+export const loadMockDataBAK = () => {
 
     return (dispatch, state) => {
 
         dispatch({
-            type: 'GENRELIST_LOADING_START'
+            type: 'GENRELIST_SUNBURST_LOADING_START'
         })
 
         setTimeout(() => {
 
             dispatch({
-                type: 'GENRELIST_INITIALIZED',
+                type: 'GENRELIST_SUNBURST_INITIALIZED',
                 data: {
-                    genres: genreListMockData
+                   sbData: SunburstMockData
                 }
             })
 
-        }, 2000)
+        }, 1000)
 
     }
 
 }
+
+/*
+ * Haetaan lajityyppien saamien arvostelujen yhteenvetotiedot palvelimelta
+ */
+export const loadMockData = (val) => {
+
+    return async dispatch => {
+
+        dispatch({
+            type: 'GENRELIST_SUNBURST_LOADING_START'
+        })
+        
+        const pairs = await genresService.getPermutations()
+
+        dispatch({
+            type: 'GENRELIST_SUNBURST_INITIALIZED',
+            data: {
+                sbData: pairs
+            }
+        })
+    }
+}
+
+
 
 
 /*
@@ -389,6 +686,19 @@ const genreListReducer = (state = initialState, action) => {
 
         case 'GENRELIST_SET_DISPLAY_TYPE':
             return setDisplayType(state, action.data);
+
+        case 'GENRELIST_SUNBURST_INITIALIZED':
+            return displaySunburst(state, action.data);
+
+        case 'GENRELIST_SUNBURST_LOADING_START':
+        
+            return {
+                ...state,
+                sunburst: {
+                    ...state.sunburst,
+                    loading: true
+                },                
+            }
 
         case 'GENRELIST_UPDATE_SEARCH':
             return setSearchSettings(state, action.data);

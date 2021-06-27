@@ -27,8 +27,21 @@ const getGenreData = async (id) => {
 
 }
 
+/* 
+ * Haetaan genret listaavalla sivulla esitettävät yhteenvetotiedot
+ *
+ * http://localhost/tahtisade/wp-json/rmt/v1/genres?include=permutations
+ */
+const getPermutations = async () => {
+
+    const response = await axios.get(`${baseUrl}/rmt/v1/genres?include=permutations`);
+    return response.data
+
+}
+
 
 export default {
     getGeneralListing,
-    getGenreData
+    getGenreData,
+    getPermutations
 }
