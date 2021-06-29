@@ -389,6 +389,7 @@ const combineArray = (parent, child) => {
                 {
                     parent: x.length > 1 ? x[0] : 'lumiere',
                     permutation: element.parent,
+                    name: x[x.length-1],
                     children: [element]
                 }
             )
@@ -402,8 +403,8 @@ const combineArray = (parent, child) => {
 const displaySunburst = (state, data) => {
 
     console.log("............ sb ..............")
-    console.log(data.sbData.instances)
-    //console.log(data.sbData.names)
+    //console.log(data.sbData.instances)
+    console.log(data.sbData.names)
 
     let genreNames = data.sbData.names
 
@@ -425,8 +426,8 @@ const displaySunburst = (state, data) => {
         children: unosTimes      
     }
 
-    console.log(fooBar)
-    console.log(SunburstMockData)
+    //console.log(fooBar)
+    //console.log(SunburstMockData)
 
 
     let sunburstData = SunburstMockData

@@ -6,6 +6,7 @@ import {loadMockData} from "../../../reducers/genreListReducer"
 import {select} from "d3";
 
 import { D3Sunburst } from './D3Sunburst';
+import {D3ZoomableSunburst} from './D3ZoomableSunburst'
 
 import Countdown from "../../Countdown";
 
@@ -34,7 +35,7 @@ const Sunburst = () => {
 
     const initVis = () => {
 
-        visFunction.current = D3Sunburst()
+        visFunction.current = D3ZoomableSunburst()
             .data(sunburstData)
             .height(height)
             .width(width)

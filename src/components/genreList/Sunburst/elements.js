@@ -7,6 +7,8 @@ export const Container = styled.div`
         padding: 5px 0 0 2px;
     }
 
+    
     & div#sequence polygon{
-        fill: ${props => props.theme.bgPrimary}; 
+        // fill: ${props => props.theme.bgPrimary
+    }; 
 `;
